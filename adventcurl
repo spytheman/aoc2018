@@ -1,0 +1,4 @@
+#!/bin/bash
+
+curl -H "cookie: $(cat cookie)"  $@
+
