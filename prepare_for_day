@@ -1,0 +1,10 @@
+#!/bin/bash
+DAY=$1
+
+YEAR=2018
+DAYFOLDER="day$DAY";
+COOKIE=$(cat cookie);
+
+mkdir -p $DAYFOLDER ;
+curl -v -H "cookie: $COOKIE" --output $DAYFOLDER/input  https://adventofcode.com/$YEAR/day/$DAY/input ;
+
