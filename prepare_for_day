@@ -5,13 +5,22 @@ YEAR=2018
 DAYFOLDER="day$DAY";
 COOKIE=$(cat cookie);
 
-mkdir -p $DAYFOLDER ;
+function elog(){    echo; echo "$(date +%Y_%m_%d__%H_%M_%S) : $1"; }
+
+elog "Script started for day: '$DAY' ...";
+
+elog "Making '$DAYFOLDER/':";
+mkdir -p $DAYFOLDER/ ;
+
+elog "Copying _day_template/ to $DAYFOLDER/  :";
 rsync -av _day_template/  $DAYFOLDER/ ; rm -rf $DAYFOLDER/input ;
 git add -f $DAYFOLDER/ ; git commit -m "Prepare $DAYFOLDER .";
-curl -v -H "cookie: $COOKIE" --output $DAYFOLDER/input  https://adventofcode.com/$YEAR/day/$DAY/input ;
+
+elog "Downloading the input for day $DAY:";
+curl -H "cookie: $COOKIE" --output $DAYFOLDER/input  https://adventofcode.com/$YEAR/day/$DAY/input ;
 git add -f $DAYFOLDER/ ; git commit -m "Download $DAYFOLDER/input ." ;
-echo;
-echo "DONE.";
+
+elog "DONE.";
+
 echo "Now you can:";
 echo "jed $DAYFOLDER/solution.php";
-
