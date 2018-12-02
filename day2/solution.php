@@ -1,7 +1,8 @@
-<?php define('SDIR', dirname(__FILE__)); include(SDIR."/../common.php");
+#!/usr/bin/env php
+<?php include("common.php");
+$lines = read_input();
 //$lines = ["abcdef","bababc","abbcde","abcccd","aabcdd","abcdee","ababab"]; // Twos: 4 | Threes: 3 | Checksum: 12
 //$lines = ["abcde","fghij","klmno","pqrst","fguij","axcye","wvxyz"]; // second exercise : Found mismatched: fghij fguij . Sames: fgij
-$lines = read_input();
 $hlines = []; $c2=0; $c3=0;
 $nline = strlen($lines[0]);
 foreach($lines as $line){
