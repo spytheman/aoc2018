@@ -6,5 +6,5 @@ DAYFOLDER="day$DAY";
 COOKIE=$(cat cookie);
 
 mkdir -p $DAYFOLDER ;
+rsync -av _day_template/  $DAYFOLDER/ ; rm -rf $DAYFOLDER/input ;
 curl -v -H "cookie: $COOKIE" --output $DAYFOLDER/input  https://adventofcode.com/$YEAR/day/$DAY/input ;
-
