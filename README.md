@@ -7,8 +7,9 @@ This repo contains my solutions of the challenges, as I solve them.
 Contents:
 =======================================
 
-./cookie - You should create it yourself. It contains a single line like this:  session=74506ff802....
-         You can get it by logging into the https://adventofcode.com website, then seeing your cookies.
+./cookie - NB: **You should create this file yourself**. It is **NOT** included in this repo. 
+The file contains a single line like this:  session=74506ff802....
+You can get it by logging into the https://adventofcode.com website, then seeing your cookies.
 
 ./prepare_for_day - A helper script, that prepares a new folder for a given day. 
 It will make a draft in folder day2/ and download the input for this day for you.
