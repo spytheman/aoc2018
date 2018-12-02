@@ -1,5 +1,5 @@
 <?php
-define('SFILE', $_SERVER['PWD'].'/'.$_SERVER['PHP_SELF']);
+define('SFILE', realpath($_SERVER['PHP_SELF']));
 define('SDIR', dirname(SFILE));
 
 function read_input($filename=''){
