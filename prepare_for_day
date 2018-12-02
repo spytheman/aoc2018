@@ -7,4 +7,11 @@ COOKIE=$(cat cookie);
 
 mkdir -p $DAYFOLDER ;
 rsync -av _day_template/  $DAYFOLDER/ ; rm -rf $DAYFOLDER/input ;
+git add -f $DAYFOLDER/ ; git commit -m "Prepare $DAYFOLDER .";
 curl -v -H "cookie: $COOKIE" --output $DAYFOLDER/input  https://adventofcode.com/$YEAR/day/$DAY/input ;
+git add -f $DAYFOLDER/ ; git commit -m "Download $DAYFOLDER/input ." ;
+echo;
+echo "DONE.";
+echo "Now you can:";
+echo "jed $DAYFOLDER/solution.php";
+
