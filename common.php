@@ -19,6 +19,9 @@ function Aprod(array $a){ return Areduce($a, function($a,$b){ return $a*$b;}, 1)
 function ACountAtLeastX(array $a, int $x): array { return Afilter($a, function($aa) use ($x) { return count($aa)>$x; }); }
 function Akeys(array $a){ return array_keys($a); }
 function Avals(array $a){ return array_values($a); }
+function Apart(array $a, int $start, int $len=0){ return array_slice($a, $start, $len); }
+function Acount(array $a, $what){ return count(Afilter($a, function($v) use ($what) { return $v === $what })); }
+
 function Aloopover(array $a, $f){
     // Infinite loop over array $a, calling $f on each element, passing to $f the element value $v, the loop iteration $i, and the current array position $imod
     $alen = count($a); if($alen===0)return;
@@ -40,4 +43,8 @@ function line2histogram(string $line, int $nline=0): array {
         @$hline[$b]++;
     }
     return $hline;
+}
+function histogramMostCommon(array $histogram, int $n=0): array {
+    arsort($histogram);
+    return Apart($histogram, 0, $n);
 }
