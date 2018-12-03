@@ -6,8 +6,8 @@ $nline = strlen($lines[0]);
 $c2=0; $c3=0;
 foreach($lines as $line){
     $hline = line2histogram($line);
-    $c2 += Acontains(Avals($hline),2)>0 ? 1 : 0;
-    $c3 += Acontains(Avals($hline),3)>0 ? 1 : 0;
+    $c2 += Ahas(Avals($hline),2)>0 ? 1 : 0;
+    $c3 += Ahas(Avals($hline),3)>0 ? 1 : 0;
 }
 printf("Twos: %d | Threes: %d | Checksum: %d\n", $c2, $c3, $c2*$c3);
 foreach($lines as $l1){

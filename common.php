@@ -16,8 +16,8 @@ function Avals(array $a){ return array_values($a); }
 function Apart(array $a, int $start, int $len=0){ return array_slice($a, $start, $len); }
 function Acount(array $a, $what){ return count(Afilter($a, function($v) use ($what) { return $v === $what; })); }
 function Alen(array $a): int { return count($a); }
-function Acontains(array $a, $what): bool { return in_array($what, $a, true); }
-function Acontains_key(array $a, $what): bool { return array_key_exists($what, $a); }
+function Ahas(array $a, $what): bool { return in_array($what, $a, true); }
+function Ahas_key(array $a, $what): bool { return array_key_exists($what, $a); }
 function Arepeat(array $a, $f){
     // Infinite loop over array $a, calling $f on each element, passing to $f the element value $v, the loop iteration $i, and the current array position $imod
     $alen = count($a); if($alen===0)return;
