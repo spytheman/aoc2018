@@ -39,8 +39,8 @@ function A2Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) if(false===$
 function A3Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) foreach($a as $z) if(false===$f($x,$y,$z))return; }
 function Aflatten(array $array): array {   return iterator_to_array( new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array))); }
 function Aunsetkeys(array &$a, array $keys){  foreach($keys as $k)unset($a[$k]); }
-function Acast2ints(array $a){ return Amap($a, function($e){ return (int) $e; }); }
-function Ahistogram(array $a){ $h = []; foreach($a as $e) @$h[$e]++; return $h; }
+function Acast2ints(array $a): array { return Amap($a, function($e){ return (int) $e; }); }
+function Ahistogram(array $a): array { $h = []; foreach($a as $e) @$h[$e]++; return $h; }
 function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
 function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = $b[0];  return $res; }
 function line2histogram(string $line): array {  return Ahistogram(line2array($line)); }
