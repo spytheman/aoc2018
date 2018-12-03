@@ -5,7 +5,7 @@ $lines = read_input();
 $nline = strlen($lines[0]);
 $c2=0; $c3=0;
 foreach($lines as $line){
-    $hline = line2histogram($line,$nline);
+    $hline = line2histogram($line);
     $c2 += Acontains(Avals($hline),2)>0 ? 1 : 0;
     $c3 += Acontains(Avals($hline),3)>0 ? 1 : 0;
 }

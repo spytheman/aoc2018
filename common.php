@@ -40,18 +40,10 @@ function A3Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) foreach($a a
 function Aflatten(array $array): array {   return iterator_to_array( new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array))); }
 function Aunsetkeys(array &$a, array $keys){  foreach($keys as $k)unset($a[$k]); }
 function Acast2ints(array $a){ return Amap($a, function($e){ return (int) $e; }); }
-
+function Ahistogram(array $a){ $h = []; foreach($a as $e) @$h[$e]++; return $h; }
 function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
 function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = $b[0];  return $res; }
-function line2histogram(string $line, int $nline=0): array {
-    $hline = [];
-    if($nline===0)$nline=strlen($line);
-    for($i=0;$i<$nline;$i++){
-        $b = $line[$i];
-        @$hline[$b]++;
-    }
-    return $hline;
-}
+function line2histogram(string $line): array {  return Ahistogram(line2array($line)); }
 function histogramMostCommon(array $histogram, int $n=0): array {
     arsort($histogram);
     return Apart($histogram, 0, $n);
