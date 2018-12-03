@@ -52,3 +52,12 @@ function histogramMostCommon(array $histogram, int $n=0): array {
     arsort($histogram);
     return Apart($histogram, 0, $n);
 }
+function rectangleEach($topx, $topy, $w, $h, $f){
+    $maxx = $topx + $w;
+    $maxy = $topy + $h;
+    for($x=$topx;$x<$maxx;$x++){
+        for($y=$topy;$y<$maxy;$y++){
+            if(false === $f($x,$y))return;
+        }
+    }     
+}
