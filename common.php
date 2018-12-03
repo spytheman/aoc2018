@@ -25,3 +25,12 @@ function Akeys(array $a){ return array_keys($a); }
 function Avals(array $a){ return array_values($a); }
 
 function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = $b[0];  return $res; }
+function line2histogram(string $line, int $nline=0): array {
+    $hline = [];
+    if($nline===0)$nline=strlen($line);
+    for($i=0;$i<$nline;$i++){
+        $b = $line[$i];
+        @$hline[$b]++;
+    }
+    return $hline;
+}

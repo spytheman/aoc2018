@@ -6,11 +6,7 @@ $lines = read_input();
 $hlines = []; $c2=0; $c3=0;
 $nline = strlen($lines[0]);
 foreach($lines as $line){
-    $hline = [];
-    for($i=0;$i<$nline;$i++){
-        $b = $line[$i];
-        @$hline[$b]++;
-    }
+    $hline = line2histogram($line,$nline);
     $hlines[ $line ] = $hline;
     $hline2 = array_filter($hline, function($v){ return $v === 2; });     if(count($hline2))$c2++;
     $hline3 = array_filter($hline, function($v){ return $v === 3; });     if(count($hline3))$c3++;
