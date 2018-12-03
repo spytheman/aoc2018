@@ -34,6 +34,7 @@ function Aloopover(array $a, $f){
         $i++;
     }
 }
+function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
 function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = $b[0];  return $res; }
 function line2histogram(string $line, int $nline=0): array {
     $hline = [];
