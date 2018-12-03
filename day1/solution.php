@@ -10,7 +10,7 @@ $flen = count( $numbers ); $cf = Asum($numbers);
 printf("Current frequency after all input: %d | input size: %d\n", $cf, $flen);
 ////////////////////////////////////////////////////////////////////////////////////////////
 $encounters = [0=>1]; $f = 0;
-Aloopover( $numbers, function($n, $c) use (&$encounters, &$f){
+Arepeat( $numbers, function($n, $c) use (&$encounters, &$f){
     $f += $n;
     //printf("   c:%6d   n:%6d  f: %6d  \n", $c, $n, $f);
     if( !array_key_exists($f, $encounters) ){
