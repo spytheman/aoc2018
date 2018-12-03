@@ -25,8 +25,8 @@ All that remains for you to do then, is the fun part - solving the problem.
 How to procede:
 =======================================
         1. ./prepare_for_day 17
-        2. edit day3/solution.php
-        3. run day3/solution.php 
+        2. edit day17/solution.php
+        3. run day17/solution.php 
         4. Cycle through steps 2 and 3, until solution works.
         5. Submit your answer to the site.
 
