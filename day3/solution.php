@@ -11,7 +11,7 @@ foreach($lines as $line){
         $coord="{$x}x{$y}";
         $map[$coord][]=$cid;
         $tclaimed = $map[$coord];
-        if(count($tclaimed)>1) foreach($tclaimed as $alreadyclaimed)unset($cids[$alreadyclaimed]);
+        if(count($tclaimed)>1)Aunsetkeys($cids, $tclaimed);
     });
 }
 $omap = ACountAtLeastX($map, 1);
