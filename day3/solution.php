@@ -8,8 +8,8 @@ foreach($lines as $line){
     $cids[$cid]=0;
     $maxx = $topx + $w;
     $maxy = $topy + $h;
-    for($x=$topx;$x<$maxx;$x++){
-        for($y=$topy;$y<$maxy;$y++){
+    foreach(range($topx, $maxx-1) as $x){
+        foreach(range($topy, $maxy-1) as $y){
             $coord=2048*$x+$y;
             $map[$coord][]=$cid;
             $tclaimed=$map[$coord];
