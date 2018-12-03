@@ -1,7 +1,23 @@
 #!/bin/bash
-DAY=$1
+export TZ=Europe/Sofia
+if [ $# -gt 0 ]; then
+  DAY=$1
+else
+  DAY=$(date +%-d)
+  echo "No day given, assume the day is the current one: '$DAY' ..."
+fi
 
-YEAR=2018
+#####################################################################################################
+
+if [ $# -gt 1 ]; then
+  YEAR=$2
+else
+  YEAR=$(date +%-Y)
+  echo "No year given, assume the year is the current one: '$YEAR' ..."
+fi
+
+#####################################################################################################
+
 DAYFOLDER="day$DAY";
 COOKIE=$(cat cookie);
 
