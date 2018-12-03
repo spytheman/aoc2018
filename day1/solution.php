@@ -6,7 +6,7 @@ $numbers = read_input();
 //$numbers = explode(", ", "+3, +3, +4, -2, -4");    // 10
 //$numbers = explode(", ", "-6, +3, +8, +5, -6");    // 5
 //$numbers = explode(", ", "+7, +7, -2, -7, -4");    // 14
-$flen = count( $numbers ); $cf = 0; foreach($numbers as $n){  $cf += $n;  }
+$flen = count( $numbers ); $cf = Asum($numbers);
 printf("Current frequency after all input: %d | input size: %d\n", $cf, $flen);
 ////////////////////////////////////////////////////////////////////////////////////////////
 $encounters = [0=>1]; $c=0; $f = 0;
