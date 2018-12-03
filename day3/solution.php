@@ -10,7 +10,7 @@ foreach($lines as $line){
     $maxy = $topy + $h;
     for($x=$topx;$x<$maxx;$x++){
         for($y=$topy;$y<$maxy;$y++){
-            $coord="{$x}x{$y}";
+            $coord=2048*$x+$y;
             $map[$coord][]=$cid;
             $tclaimed=$map[$coord];
             if(count($tclaimed)>1)Aunsetkeys($cids,$tclaimed);
