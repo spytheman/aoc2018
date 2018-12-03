@@ -43,6 +43,17 @@ function histogramMostCommon(array $histogram, int $n=0): array {
     arsort($histogram);
     return Apart($histogram, 0, $n);
 }
+function line2maskedlines($line,$maskchar=' '){
+    $res = [];
+    $letters = line2array($line);
+    foreach($letters as $k=>$b){
+        $mline = $letters; 
+        $mline[$k]=$maskchar; 
+        $mline = join('', $mline);
+        $res[]=$mline;
+    }
+    return $res;
+}
 function rectangleEach($topx, $topy, $w, $h, $f){
     $maxx = $topx + $w;
     $maxy = $topy + $h;
@@ -53,6 +64,7 @@ function rectangleEach($topx, $topy, $w, $h, $f){
     }     
 }
 function ve($x){ return json_encode($x); }
+function noSpace($line, $what=' '){ return str_replace($what, '', $line); }
 function read_input($filename=''){
     if($filename==='')$filename=SDIR."/input";
     return Afilter( explode("\n", file_get_contents($filename)), function($line){ return $line!==''; });
