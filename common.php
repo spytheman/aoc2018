@@ -36,6 +36,7 @@ function Arepeat(array $a, $f){
 function A1Deach(array $a, $f){ foreach($a as $x) if(false===$f($x,$y))return; }
 function A2Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) if(false===$f($x,$y))return; }
 function A3Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) foreach($a as $z) if(false===$f($x,$y,$z))return; }
+function Aflatten(array $array): array {   return iterator_to_array( new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array))); }
 
 function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
 function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = $b[0];  return $res; }
@@ -61,3 +62,4 @@ function rectangleEach($topx, $topy, $w, $h, $f){
         }
     }     
 }
+
