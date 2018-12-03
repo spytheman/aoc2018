@@ -12,7 +12,7 @@ The file contains a single line like this:  session=74506ff802....
 You can get it by logging into the https://adventofcode.com website, then seeing your cookies.
 
 ./prepare_for_day - A helper script, that prepares a new folder for a given day. 
-It will make a draft in folder day2/ and download the input for this day for you.
+It will produce a draft solution in folder dayXX/ , then it will download the input for this day for you.
 All that remains for you to do then, is the fun part - solving the problem.
 
         Usage: ./prepare_for_day 2                  
