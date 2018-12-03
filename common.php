@@ -1,13 +1,7 @@
 <?php
 define('SFILE', realpath($_SERVER['PHP_SELF']));
 define('SDIR', dirname(SFILE));
-
-function read_input($filename=''){
-    if($filename==='')$filename=SDIR."/input";
-    $clean_lines = []; 
-    $lines = explode("\n", file_get_contents($filename));
-    return Afilter($lines, function($line){ return $line!==''; });
-}
+ini_set('memory_limit', '512M');
 
 function Amap(array $a, $f): array { return array_map($f, $a); }
 function Afilter(array $a, $f): array { return array_filter($a, $f); }
@@ -58,4 +52,8 @@ function rectangleEach($topx, $topy, $w, $h, $f){
         }
     }     
 }
-
+function ve($x){ return json_encode($x); }
+function read_input($filename=''){
+    if($filename==='')$filename=SDIR."/input";
+    return Afilter( explode("\n", file_get_contents($filename)), function($line){ return $line!==''; });
+}
