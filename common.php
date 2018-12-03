@@ -23,7 +23,17 @@ function Aprod(array $a){ return Areduce($a, function($a,$b){ return $a*$b;}, 1)
 function ACountAtLeastX(array $a, int $x): array { return Afilter($a, function($aa) use ($x) { return count($aa)>$x; }); }
 function Akeys(array $a){ return array_keys($a); }
 function Avals(array $a){ return array_values($a); }
-
+function Aloopover(array $a, $f){
+    // Infinite loop over array $a, calling $f on each element, passing to $f the element value $v, the loop iteration $i, and the current array position $imod
+    $alen = count($a); if($alen===0)return;
+    $i=0;
+    while(true){
+        $imod = $i % $alen;
+        $v = $a[$imod];
+        if(FALSE === $f($v, $i, $imod))break;
+        $i++;
+    }
+}
 function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = $b[0];  return $res; }
 function line2histogram(string $line, int $nline=0): array {
     $hline = [];
