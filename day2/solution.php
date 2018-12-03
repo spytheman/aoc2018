@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php include("common.php");
+<?php
+include("common.php");
 $lines = read_input();
 $nline = strlen($lines[0]);
 $c2=0; $c3=0;

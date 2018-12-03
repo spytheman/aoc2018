@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
-ini_set('memory_limit', '512M');
 include("common.php");
 $lines = read_input();
+ini_set('memory_limit', '512M');
 $map=[]; $cids=[];
 foreach($lines as $line){
     list($cid, $topx,$topy, $w,$h) = line2digits($line);

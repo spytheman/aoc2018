@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php include("common.php");
+<?php 
+include("common.php");
 $numbers = read_input();
 $flen = count( $numbers ); $cf = Asum($numbers);
 printf("Current frequency after all input: %d | input size: %d\n", $cf, $flen);
