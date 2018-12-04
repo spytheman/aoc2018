@@ -20,6 +20,8 @@ function Acount(array $a, $what){ return count(Afilter($a, function($v) use ($wh
 function Alen(array $a): int { return count($a); }
 function Ahas(array $a, $what): bool { return in_array($what, $a, true); }
 function Ahas_key(array $a, $what): bool { return array_key_exists($what, $a); }
+function Azip2(array $a1, array $a2): array { return array_map(function($a,$b){ return [$a,$b]; }, $a1, $a2); }
+function Azip3(array $a1, array $a2, array $a3): array { return array_map(function($a,$b,$c){ return [$a,$b,$c]; }, $a1, $a2, $a3); }
 function Arepeat(array $a, $f){
     // Infinite loop over array $a, calling $f on each element, passing to $f the element value $v, the loop iteration $i, and the current array position $imod
     $alen = count($a); if($alen===0)return;
