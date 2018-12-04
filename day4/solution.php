@@ -45,7 +45,7 @@ foreach($history as $ctime=>[$line, [$y,$mon,$d, $h,$m, $cg]]){
                 $timetable[ $cguard ][ $m ][] = $xd;
                 $ttminutes[ $m ][$cguard] += 1;
             }
-            printf("         #%d | day: %s | asleep minutes: %s\n", $cguard, $xd, ve($asleepminutes));
+            //printf("         #%d | day: %s | asleep minutes: %s\n", $cguard, $xd, ve($asleepminutes));
         }
         $old_ctime = $ctime;
     }
@@ -77,7 +77,7 @@ foreach($allminutes as $m){
         $mostasleepguard_per_minute = $mguard;
         $mostasleepminute = $m;
     }
-    printf("m: %d | mguard: %5d | $mtimes: %3d | guards: %s\n",$m, $mguard, $mtimes, ve($mguards));
+    //printf("m: %d | mguard: %5d | $mtimes: %3d | guards: %s\n",$m, $mguard, $mtimes, ve($mguards));
 }
 printf("Most asleep minute: %2d | most asleep guard: %5d | most asleep times: %3d\n", $mostasleepminute, $mostasleepguard_per_minute, $mostasleeptimes_per_minute);
 printf("Part 2 answer is: %d\n", $mostasleepguard_per_minute * $mostasleepminute);
