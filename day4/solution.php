@@ -4,7 +4,7 @@ include("common.php");
 $lines = read_input();
 $history = []; $cguards = [];
 foreach($lines as $line){
-    @list($y,$mon,$d, $h,$m, $cguard) = line2digits($line);
+    @[$y,$mon,$d, $h,$m, $cguard] = line2digits($line);
     $cdate = sprintf("%04d/%02d/%02d %02d:%02d", $y,$mon,$d,$h,$m);
     $ctime = strtotime($cdate);
     $history[ $ctime ] = [$line, Acast2ints([$y,$mon,$d, $h,$m, $cguard])];
@@ -16,7 +16,7 @@ $guards=[]; $awakes = []; $asleeps = []; $timetable = []; $ttminutes = [];
 foreach($cguards as $c){ foreach(range(0, 59) as $m){ $timetable[ $c ][$m] = []; } }
 foreach(range(0, 59) as $m){ foreach($cguards as $c){ $ttminutes[ $m ][$c] = 0; } }
 $old_ctime=0; $cstate = 1;
-foreach($history as $ctime=>list($line, list($y,$mon,$d, $h,$m, $cg))){
+foreach($history as $ctime=>[$line, [$y,$mon,$d, $h,$m, $cg]]){
     //printf("ctime: %d | %02d:%02d | %6d->%6d | line: %s \n", $ctime, $h,$m, $cg, $cguard, $line);
     if($cg!==0){
         $cguard = $cg;
@@ -71,9 +71,7 @@ printf("Part 1 answer is: %d\n", $mostAsleepGuard * $asleepdays_index);
 $mostasleeptimes_per_minute = 0; $mostasleepguard_per_minute = 0; $mostasleepminute = 0;
 foreach(range(0,59) as $m){
     $mguards = $ttminutes[ $m ];
-    arsort($mguards);
-    $mguard = Akeys($mguards)[0];
-    $mtimes = Avals($mguards)[0];
+    [$mguard,$mtimes]=Akv(histogramMostCommon($mguards));
     if($mtimes>$mostasleeptimes_per_minute){
         $mostasleeptimes_per_minute = $mtimes;
         $mostasleepguard_per_minute = $mguard;
