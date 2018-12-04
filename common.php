@@ -4,6 +4,7 @@ define('SDIR', dirname(SFILE));
 ini_set('memory_limit', '512M');
 
 function Amap(array $a, $f): array { return array_map($f, $a); }
+function Amapkv(array $a, $f): array { return array_map($f, array_keys($a), $a); }
 function Afilter(array $a, $f): array { return array_filter($a, $f); }
 function Areduce(array $a, $f, $init){ return array_reduce($a, $f, $init); }
 function Amax(array $a){ return Areduce($a, max, $a[0]); }
