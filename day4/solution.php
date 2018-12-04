@@ -8,9 +8,9 @@ foreach($lines as $line){
     $cdate = sprintf("%04d/%02d/%02d %02d:%02d", $y,$mon,$d,$h,$m);
     $ctime = strtotime($cdate);
     $history[ $ctime ] = [$line, Acast2ints([$y,$mon,$d, $h,$m, $cguard])];
-    if( $cguard > 0 ) $cguards[ $cguard ] = 1;
+    if( $cguard > 0 ) $cguards[ $cguard ] = $cguard;
 }
-asort($history); $cguards = Akeys($cguards);
+asort($history);
 $cguard = 0;
 $guards=[]; $awakes = []; $asleeps = []; $timetable = []; $ttminutes = [];
 foreach($cguards as $c){ foreach($allminutes as $m){ $timetable[ $c ][$m] = []; } }
@@ -18,16 +18,8 @@ foreach($allminutes as $m){ foreach($cguards as $c){ $ttminutes[ $m ][$c] = 0; }
 $old_ctime=0; $cstate = 1;
 foreach($history as $ctime=>[$line, [$y,$mon,$d, $h,$m, $cg]]){
     //printf("ctime: %d | %02d:%02d | %6d->%6d | line: %s \n", $ctime, $h,$m, $cg, $cguard, $line);
-    if($cg!==0){
-        $cguard = $cg;
-        $old_ctime = $ctime;
-        $cstate = 1;
-    }else{
-        if(strpos($line, 'falls asleep')!==false) {
-            $cstate = 0;
-            $guards[ $cguard ] = 0;
-            @$awakes[ $cguard ] += ( $ctime - $old_ctime );
-        }
+    if($cg!==0){   $cguard = $cg;   $old_ctime = $ctime;     $cstate = 1;  } else{
+        if(strpos($line, 'falls asleep')!==false) {   $cstate = 0; $guards[ $cguard ] = 0; @$awakes[ $cguard ] += ( $ctime - $old_ctime ); }
         if(strpos($line, 'wakes up')!==false) {
             $cstate = 1;
             $guards[ $cguard ] = 1;
