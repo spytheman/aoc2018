@@ -40,10 +40,12 @@ function Ahistogram_update(array &$a, array $newvals){ foreach($newvals as $nv){
 function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
 function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = Acast2ints($b[0]);  return $res; }
 function line2histogram(string $line): array {  return Ahistogram(line2array($line)); }
-function histogramMostCommon(array $histogram, int $n=0): array {
+function histogramMostCommon(array $histogram, int $n=1): array {
     arsort($histogram);
-    return Apart($histogram, 0, $n);
+    $k = Akeys( $histogram ); $v = Avals( $histogram );
+    return array_combine( Apart($k, 0, $n), Apart($v, 0, $n));
 }
+function Akv(array $a, int $index=0): array { return [ Akeys($a)[$index], Avals($a)[$index] ]; }
 function line2maskedlines($line,$maskchar=' '){
     $res = [];
     $letters = line2array($line);
