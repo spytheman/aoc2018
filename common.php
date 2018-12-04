@@ -8,6 +8,8 @@ function Afilter(array $a, $f): array { return array_filter($a, $f); }
 function Areduce(array $a, $f, $init){ return array_reduce($a, $f, $init); }
 function Amax(array $a){ return Areduce($a, max, $a[0]); }
 function Amin(array $a){ return Areduce($a, min, $a[0]); }
+function Amax_by_key(array $a){ $k=Amax(Akeys($a)); return $a[$k]; }
+function Amin_by_key(array $a){ $k=Amin(Akeys($a)); return $a[$k]; }
 function Asum(array $a){ return Areduce($a, function($a,$b){ return $a+$b;}, 0); }
 function Aprod(array $a){ return Areduce($a, function($a,$b){ return $a*$b;}, 1); }
 function ACountAtLeastX(array $a, int $x): array { return Afilter($a, function($aa) use ($x) { return count($aa)>$x; }); }
