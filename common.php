@@ -46,6 +46,7 @@ function histogramMostCommon(array $histogram, int $n=1): array {
     return array_combine( Apart($k, 0, $n), Apart($v, 0, $n));
 }
 function Akv(array $a, int $index=0): array { return [ Akeys($a)[$index], Avals($a)[$index] ]; }
+function Akvmostfrequent(array $a): array { return Akv(histogramMostCommon($a)); }
 function line2maskedlines($line,$maskchar=' '){
     $res = [];
     $letters = line2array($line);
