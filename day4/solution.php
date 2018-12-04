@@ -36,8 +36,7 @@ foreach($history as $ctime=>[$line, [$y,$mon,$d, $h,$m, $cg]]){
         $old_ctime = $ctime;
     }
 }
-arsort($asleeps);
-[$mostAsleepGuard,$x] = Akv($asleeps);
+[$mostAsleepGuard,] = Akvmostfrequent($asleeps);
 printf("Most asleep guard: %d\n", $mostAsleepGuard);
 $minimum = [0,0]; foreach($timetable[ $mostAsleepGuard ] as $km=>$kx){
     //printf("km: %s => km: %s\n", $km, ve($kx));
@@ -49,7 +48,7 @@ printf("Part 1 answer is: %d\n", $mostAsleepGuard * $minimum[1]);
 
 $minimum=[0,0,0]; foreach($allminutes as $m){
     $mguards = $ttminutes[ $m ];
-    [$mguard,$mtimes]=Akv(histogramMostCommon($mguards));
+    [$mguard,$mtimes]=Akvmostfrequent($mguards);
     if($mtimes>$minimum[0]) $minimum = [ $mtimes, $mguard, $m ];
     //printf("m: %d | mguard: %5d | $mtimes: %3d | guards: %s\n",$m, $mguard, $mtimes, ve($mguards));
 }
