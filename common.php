@@ -71,5 +71,5 @@ function ve($x){ return json_encode($x); }
 function noSpace($line, $what=' '){ return str_replace($what, '', $line); }
 function read_input($filename=''){
     if($filename==='')$filename=SDIR."/input";
-    return Afilter( explode("\n", file_get_contents($filename)), function($line){ return $line!==''; });
+    return file($filename, FILE_IGNORE_NEW_LINES);
 }
