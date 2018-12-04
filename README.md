@@ -4,6 +4,8 @@ Delyan Angelov
 I am doing the [Advent of Code](https://adventofcode.com) puzzles for 2018.
 This repo contains my solutions of the challenges, as I solve them.
 
+I will push my solutions *ONLY AFTER* the leaderboard for the day is already full.
+
 Contents:
 =======================================
 
