@@ -68,16 +68,12 @@ foreach($timetable[ $mostAsleepGuard ] as $km=>$kx){
 printf("Maximum asleeps for guard %d at minute: %d = %d\n", $mostAsleepGuard, $asleepdays_index, $asleepdays );
 printf("Part 1 answer is: %d\n", $mostAsleepGuard * $asleepdays_index);
 
-$mostasleeptimes_per_minute = 0; $mostasleepguard_per_minute = 0; $mostasleepminute = 0;
+$minimum=[0,0,0];
 foreach($allminutes as $m){
     $mguards = $ttminutes[ $m ];
     [$mguard,$mtimes]=Akv(histogramMostCommon($mguards));
-    if($mtimes>$mostasleeptimes_per_minute){
-        $mostasleeptimes_per_minute = $mtimes;
-        $mostasleepguard_per_minute = $mguard;
-        $mostasleepminute = $m;
-    }
+    if($mtimes>$minimum[0]) $minimum = [ $mtimes, $mguard, $m ];
     //printf("m: %d | mguard: %5d | $mtimes: %3d | guards: %s\n",$m, $mguard, $mtimes, ve($mguards));
 }
-printf("Most asleep minute: %2d | most asleep guard: %5d | most asleep times: %3d\n", $mostasleepminute, $mostasleepguard_per_minute, $mostasleeptimes_per_minute);
-printf("Part 2 answer is: %d\n", $mostasleepguard_per_minute * $mostasleepminute);
+printf("Most asleep minute: %2d | most asleep guard: %5d | most asleep times: %3d\n", $minimum[2], $minimum[1], $minimum[0]);
+printf("Part 2 answer is: %d\n", $minimum[1] * $minimum[2]);
