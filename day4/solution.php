@@ -5,30 +5,28 @@ $lines = read_input();
 $history = []; $cguards = []; $allminutes = range(0,59);
 foreach($lines as $line){
     @[$y,$mon,$d, $h,$m, $cguard] = line2digits($line);
-    $cdate = sprintf("%04d/%02d/%02d %02d:%02d", $y,$mon,$d,$h,$m);
-    $ctime = strtotime($cdate);
+    $cdate = sprintf("%04d/%02d/%02d %02d:%02d", $y,$mon,$d,$h,$m); $ctime = strtotime($cdate);
     $history[ $ctime ] = [$line, Acast2ints([$y,$mon,$d, $h,$m, $cguard])];
     if( $cguard > 0 ) $cguards[ $cguard ] = $cguard;
 }
 asort($history);
-$cguard = 0;
-$guards=[]; $awakes = []; $asleeps = []; $timetable = []; $ttminutes = [];
-foreach($cguards as $c){ foreach($allminutes as $m){ $timetable[ $c ][$m] = []; } }
+$awakes = []; $asleeps = []; $timetable = []; $ttminutes = []; $old_ctime=0; $cstate = 1;
+foreach($cguards as $c){ foreach($allminutes as $m){ $timetable[ $c ][$m] = []; } } 
 foreach($allminutes as $m){ foreach($cguards as $c){ $ttminutes[ $m ][$c] = 0; } }
-$old_ctime=0; $cstate = 1;
 foreach($history as $ctime=>[$line, [$y,$mon,$d, $h,$m, $cg]]){
     //printf("ctime: %d | %02d:%02d | %6d->%6d | line: %s \n", $ctime, $h,$m, $cg, $cguard, $line);
     if($cg!==0){   $cguard = $cg;   $old_ctime = $ctime;     $cstate = 1;  } else{
-        if(strpos($line, 'falls asleep')!==false) {   $cstate = 0; $guards[ $cguard ] = 0; @$awakes[ $cguard ] += ( $ctime - $old_ctime ); }
+        if(strpos($line, 'falls asleep')!==false) {   
+            $cstate = 0; @$awakes[ $cguard ] += ( $ctime - $old_ctime ); 
+        }
         if(strpos($line, 'wakes up')!==false) {
             $cstate = 1;
-            $guards[ $cguard ] = 1;
             @$asleeps[ $cguard ] += ( $ctime - $old_ctime );
             //printf("start at %s - end at %s\n", date("c", $old_ctime), date("c", $ctime));
             $asleepminutes=[];
             foreach(@range($old_ctime, $ctime, 60) as $t){
+                $xd = date("m-d", $t); 
                 $xm = (int) date("i", $t);
-                $xd = date("m-d", $t);
                 $asleepminutes[] = $xm;
                 //printf("sleep at %s - %s\n", $xd, $xm);
             }            
@@ -42,26 +40,18 @@ foreach($history as $ctime=>[$line, [$y,$mon,$d, $h,$m, $cg]]){
         $old_ctime = $ctime;
     }
 }
-Arsort($awakes);
-Arsort($asleeps);
-//printf("Awakes: %s\n",ve($awakes));
-//printf("Asleeps: %s\n",ve($asleeps));
-$mostAsleepGuard = Akeys($asleeps)[0];
+arsort($awakes); arsort($asleeps);
+[$mostAsleepGuard,$x] = Akv($asleeps);
 printf("Most asleep guard: %d\n", $mostAsleepGuard);
-$asleepdays=0; $asleepdays_index = 0;
-foreach($timetable[ $mostAsleepGuard ] as $km=>$kx){
+$minimum = [0,0]; foreach($timetable[ $mostAsleepGuard ] as $km=>$kx){
     //printf("km: %s => km: %s\n", $km, ve($kx));
-    $asleeps = Alen($kx);
-    if( $asleepdays <= $asleeps ){
-        $asleepdays = $asleeps;
-        $asleepdays_index = $km;
-    }
+    $asleeps = Alen($kx); 
+    if( $minimum[0] <= $asleeps ) $minimum = [$asleeps, $km];
 }
-printf("Maximum asleeps for guard %d at minute: %d = %d\n", $mostAsleepGuard, $asleepdays_index, $asleepdays );
-printf("Part 1 answer is: %d\n", $mostAsleepGuard * $asleepdays_index);
+printf("Maximum asleeps for guard %d at minute: %d = %d\n", $mostAsleepGuard, $minimum[1], $minimum[0]);
+printf("Part 1 answer is: %d\n", $mostAsleepGuard * $minimum[1]);
 
-$minimum=[0,0,0];
-foreach($allminutes as $m){
+$minimum=[0,0,0]; foreach($allminutes as $m){
     $mguards = $ttminutes[ $m ];
     [$mguard,$mtimes]=Akv(histogramMostCommon($mguards));
     if($mtimes>$minimum[0]) $minimum = [ $mtimes, $mguard, $m ];
