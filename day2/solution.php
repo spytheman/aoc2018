@@ -3,7 +3,6 @@
 $lines=read_input();
 $d=[];foreach($lines as $line)Ahistogram_update($d,Akeys(Ahistogram(Avals(line2histogram($line)))));
 printf("2s: %d | 3s: %d | Checksum: %d\n",$d[2],$d[3],$d[2]*$d[3]);
-
 $seen=[];foreach($lines as $line){
     $mlines=line2maskedlines($line);
     foreach($mlines as $mline){
