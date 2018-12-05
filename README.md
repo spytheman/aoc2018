@@ -39,3 +39,5 @@ Misc.
 You can run all the solutions so far like that:
 
         for i in day*/solution.php; do echo "$i : "; time $i; echo ;done
+
+
