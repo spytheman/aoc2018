@@ -21,7 +21,8 @@ foreach($reactionpairs as $pair){
     $cleanedinput = str_replace(line2array($pair), '', $input);
     //printf("pair: %s, ilen: %d, cleanedlen: %d\n", $pair, strlen($input),strlen($cleanedinput));
     [$c, $reactresult] = fullReaction($cleanedinput, $reactionpairs);
-    $part2results[] = strlen($reactresult);
+    $part2results[$pair] = strlen($reactresult);
 }
 $part2 = Amin($part2results);
-printf("Part 2: the length of the shortest polymer you can produce by removing all units of exactly one type and fully reacting the result is: %d\n", $part2);
+$thepair = Akeyof($part2results, $part2);
+printf("Part 2: the length of the shortest polymer after removing all units of exactly one type: '%s' is: %d\n", $thepair, $part2);
