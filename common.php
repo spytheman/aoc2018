@@ -39,7 +39,7 @@ function A2Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) if(false===$
 function A3Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) foreach($a as $z) if(false===$f($x,$y,$z))return; }
 function Aflatten(array $array): array {   return iterator_to_array( new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array))); }
 function Aunsetkeys(array &$a, array $keys){  foreach($keys as $k)unset($a[$k]); }
-function Acast2ints(array $a): array { return Amap($a, function($e){ return (int) $e; }); }
+function Acast2ints(array $a): array { return Amap($a, 'intval'); }
 function Ahistogram(array $a): array { $h = []; foreach($a as $e) @$h[$e]++; return $h; }
 function Ahistogram_update(array &$a, array $newvals){ foreach($newvals as $nv){ @$a[$nv]++; } }
 function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
