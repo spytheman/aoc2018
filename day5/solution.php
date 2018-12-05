@@ -15,3 +15,13 @@ function fullReaction(string $input, array $reactionpairs): array {
 }
 $part1 = fullReaction($input, $reactionpairs);
 printf("Part 1: reactions: %d | remaining units = answer = %d\n", $part1[0], strlen($part1[1]));
+
+$part2results = [];
+foreach($reactionpairs as $pair){
+    $cleanedinput = str_replace(line2array($pair), '', $input);
+    //printf("pair: %s, ilen: %d, cleanedlen: %d\n", $pair, strlen($input),strlen($cleanedinput));
+    [$c, $reactresult] = fullReaction($cleanedinput, $reactionpairs);
+    $part2results[] = strlen($reactresult);
+}
+$part2 = Amin($part2results);
+printf("Part 2: the length of the shortest polymer you can produce by removing all units of exactly one type and fully reacting the result is: %d\n", $part2);
