@@ -11,17 +11,17 @@ function Amap(array $a, $f): array { return array_map($f, $a); }
 function Amapkv(array $a, $f): array { return array_map($f, array_keys($a), $a); }
 function Afilter(array $a, $f): array { return array_filter($a, $f); }
 function Areduce(array $a, $f, $init){ return array_reduce($a, $f, $init); }
-function Amax(array $a){ return Areduce($a, 'max', $a[0]); }
-function Amin(array $a){ return Areduce($a, 'min', $a[0]); }
+function Amax(array $a){ return array_reduce($a, 'max', Afirst($a)); }
+function Amin(array $a){ return array_reduce($a, 'min', Afirst($a)); }
 function Amax_by_key(array $a){ $k=Amax(Akeys($a)); return $a[$k]; }
 function Amin_by_key(array $a){ $k=Amin(Akeys($a)); return $a[$k]; }
 function Asum(array $a){ return array_sum($a); }
 function Aprod(array $a){ return array_product($a); }
-function ACountAtLeastX(array $a, int $x): array { return Afilter($a, function($aa) use ($x) { return count($aa)>$x; }); }
+function ACountAtLeastX(array $a, int $x): array { return array_filter($a, function($aa) use ($x) { return count($aa)>$x; }); }
 function Akeys(array $a){ return array_keys($a); }
 function Avals(array $a){ return array_values($a); }
 function Apart(array $a, int $start, int $len=0){ return array_slice($a, $start, $len); }
-function Acount(array $a, $what){ return count(Afilter($a, function($v) use ($what) { return $v === $what; })); }
+function Acount(array $a, $what){ return count(array_filter($a, function($v) use ($what) { return $v === $what; })); }
 function Alen(array $a): int { return count($a); }
 function Ahas(array $a, $what): bool { return in_array($what, $a, true); }
 function Ahas_key(array $a, $what): bool { return array_key_exists($what, $a); }
@@ -58,18 +58,18 @@ function A2Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) if(false===$
 function A3Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) foreach($a as $z) if(false===$f($x,$y,$z))return; }
 function Aflatten(array $array): array {   return iterator_to_array( new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array))); }
 function Aunsetkeys(array &$a, array $keys){  foreach($keys as $k)unset($a[$k]); }
-function Acast2ints(array $a): array { return Amap($a, 'intval'); }
+function Acast2ints(array $a): array { return array_map('intval', $a); }
 function Ahistogram(array $a): array { return array_count_values($a); }
 function Ahistogram_update(array &$a, array $newvals){ foreach($newvals as $nv){ @$a[$nv]++; } }
 function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
-function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = Acast2ints($b[0]);  return $res; }
+function line2digits(string $line): array { $res = []; if(preg_match_all("/\d+/",$line,$b)) $res = Acast2ints(Afirst($b));  return $res; }
 function line2histogram(string $line): array {  return Ahistogram(line2array($line)); }
 function histogramMostCommon(array $histogram, int $n=1): array {
     arsort($histogram);
-    $k = Akeys( $histogram ); $v = Avals( $histogram );
+    $k = array_keys( $histogram ); $v = array_values( $histogram );
     return array_combine( Apart($k, 0, $n), Apart($v, 0, $n));
 }
-function Agetkv(array $a, int $index=0): array { return [ Akeys($a)[$index], Avals($a)[$index] ]; }
+function Agetkv(array $a, int $i=0): array { return [ array_keys($a)[$i], array_values($a)[$i] ]; }
 function Agetkvmostfrequent(array $a): array { return Agetkv(histogramMostCommon($a)); }
 function line2maskedlines($line,$maskchar=' '){
     $res = [];
