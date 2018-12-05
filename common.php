@@ -29,6 +29,7 @@ function Akeyof(array $a, $what){ return array_search($what, $a); }
 function Azip2(array $a1, array $a2): array { return array_map(function($a,$b){ return [$a,$b]; }, $a1, $a2); }
 function Azip3(array $a1, array $a2, array $a3): array { return array_map(function($a,$b,$c){ return [$a,$b,$c]; }, $a1, $a2, $a3); }
 function Areverse(array $a): array { return array_reverse($a, true); }
+function Acolumn(array $a, $colname='id',$colindexname=null): array { return array_column($a, $colname,$colindexname); }
 function Arepeat(array $a, $f){
     // Infinite loop over array $a, calling $f on each element, passing to $f the element value $v, the loop iteration $i, and the current array position $imod
     $alen = count($a); if($alen===0)return;
