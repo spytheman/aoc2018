@@ -29,7 +29,7 @@ Common way to do an exercise in Advent of Code:
         0. After the start time of the contest, read the task description on the site.
         1. ./prepare_for_day 17
         2. edit day17/solution.php
-        3. run day17/solution.php 
+        3. ./day17/solution.php 
         4. Cycle through steps 2 and 3, until solution works.
         5. Submit your answer to the site.
 
