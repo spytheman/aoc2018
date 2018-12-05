@@ -41,3 +41,15 @@ You can run all the solutions so far like that:
         for i in day*/solution.php; do echo "$i : "; time $i; echo ;done
 
 
+
+Solutions and notes about them so far:
+=======================================
+
+Task | Solution | Comment
+--- | --- | ---
+[Day 1: Chronal Calibration](https://adventofcode.com/2018/day/1) | [day1/solution.php](day1/solution.php) | After implementing Arepeat/2 the rest was very easy.
+[Day 2: Inventory Management System](https://adventofcode.com/2018/day/2) | [day2/solution.php](day2/solution.php) | Histograms FTW!
+[Day 3: No Matter How You Slice It](https://adventofcode.com/2018/day/3) | [day3/solution.php](day3/solution.php) | Just extract all numbers without worrying about regexpes and clean parsing...
+[Day 4: Repose Record](https://adventofcode.com/2018/day/4) | [day4/solution.php](day4/solution.php) | This one took much more time than I expected.
+[Day 5: Alchemical Reduction](https://adventofcode.com/2018/day/5) | [day5/solution.php](day5/solution.php) | Using range/2 and Azip2/2 to make the pairs that had to be removed in advance, was easy and quick ... In retrospect, a simple scanner would be quicker though.
+
