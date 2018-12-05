@@ -3,6 +3,10 @@ define('SFILE', realpath($_SERVER['PHP_SELF']));
 define('SDIR', dirname(SFILE));
 ini_set('memory_limit', '512M');
 
+function Afirst(array $a){ $k = array_key_first($a); return $a[$k]; }
+function Alast(array $a){ $k = array_key_last($a);  return $a[$k]; }
+function Afirstkv(array $a){ $k = array_key_first($a); return [$k,$a[$k]]; }
+function Alastkv(array $a){ $k = array_key_last($a);  return [$k,$a[$k]]; }
 function Amap(array $a, $f): array { return array_map($f, $a); }
 function Amapkv(array $a, $f): array { return array_map($f, array_keys($a), $a); }
 function Afilter(array $a, $f): array { return array_filter($a, $f); }
