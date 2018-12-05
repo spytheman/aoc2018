@@ -34,6 +34,14 @@ function Aareall(array $a, $f): bool {
     $res = true; foreach($a as $e)if(!$f($e)){ $res = false; break; }
     return $res;
 }
+function Afirstmatching(array $a, $f){
+    foreach($a as $k=>$e)if($f($e,$k)){ return $e; }
+    return false;
+}
+function Afirstmatchingkv(array $a, $f): array {
+    foreach($a as $k=>$e)if($f($e,$k)){ return [$k,$e]; }
+    return false;
+}
 function Arepeat(array $a, $f){
     // Infinite loop over array $a, calling $f on each element, passing to $f the element value $v, the loop iteration $i, and the current array position $imod
     $alen = count($a); if($alen===0)return;
