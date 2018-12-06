@@ -24,8 +24,7 @@ $borderareas=[];
 foreach(range(0,$maxx) as $i) {  $borderareas[]= $g[$i][0];   $borderareas[]= $g[$i][$maxy]; }
 foreach(range(0,$maxy) as $j) {  $borderareas[]= $g[0][$j];   $borderareas[]= $g[$maxx][$j]; }
 Aunsetkeys($areas, array_unique($borderareas));
-asort($areas);
 printf("Part 1 answer: the size of the largest area that is not infinite is: %d\n", Amax($areas));
 
 $size=0; foreach(range(0,$maxx) as $i) foreach(range(0,$maxy) as $j) if($d[$i][$j]<10000) $size++;
-printf("Part 2 answer: the size of the region containing all locations which have a total distance to all given coordinates of less than 10000 is: %d \n", $size);
+printf("Part 2 answer: the size of the region with sum(distances) < 10000 is: %d \n", $size);
