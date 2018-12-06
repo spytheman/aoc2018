@@ -23,6 +23,5 @@ foreach($reactionpairs as $pair){
     [$c, $reactresult] = fullReaction($cleanedinput, $reactionpairs);
     $part2results[$pair] = strlen($reactresult);
 }
-$part2 = Amin($part2results);
-$thepair = Akeyof($part2results, $part2);
+[$thepair, $part2] = Aminkv($part2results);
 printf("Part 2: the length of the shortest polymer after removing all units of exactly one type: '%s' is: %d\n", $thepair, $part2);
