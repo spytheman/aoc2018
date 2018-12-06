@@ -95,5 +95,6 @@ function ve($x){ return json_encode($x); }
 function noSpace($line, $what=' '){ return str_replace($what, '', $line); }
 function read_input($filename=''){
     if($filename==='')$filename=SDIR."/input";
+    if($_SERVER['argc']>1) $filename=$_SERVER['argv'][1];
     return file($filename, FILE_IGNORE_NEW_LINES);
 }
