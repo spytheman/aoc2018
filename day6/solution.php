@@ -11,9 +11,9 @@ foreach(range(0,$maxx) as $i){
         @$g[$i][$j]=0;
         $distances = [];
         foreach($coords as $z) $distances[$z] = abs($i-$x[$z]) + abs($j-$y[$z]);
-        $m = Amin($distances); $mk = Akeyof($distances,$m);
+        [$mk,$m] = Aminkv($distances);
         @$d[$i][$j]=Asum($distances);
-        $mn = count(Afilter($distances, function($d) use ($m) { return $m === $d; }));
+        $mn = Ahistogram($distances)[$m];
         //printf("i,j=$i,$j | m:$m | mk:$mk | mn:$mn | distances: %s\n",ve($distances));
         if($mn>1)continue;
         @$g[$i][$j]=$mk;
@@ -23,11 +23,9 @@ foreach(range(0,$maxx) as $i){
 $borderpoints=[];
 foreach(range(0,$maxx) as $i) {  $borderpoints[]= $g[$i][0];   $borderpoints[]= $g[$i][$maxy]; }
 foreach(range(0,$maxy) as $j) {  $borderpoints[]= $g[0][$j];   $borderpoints[]= $g[$maxx][$j]; }
-$borderpoints = array_unique($borderpoints);
-$remainingpoints=Afilter($coords, function($z) use( $borderpoints ) { return !Ahas($borderpoints, $z); });
-$areas=[]; foreach($remainingpoints as $c) $areas[] = $points[$c];
-asort($areas);
-printf("Part 1 answer: the size of the largest area that is not infinite is: %d\n", Amax($areas));
+Aunsetkeys($points, array_unique($borderpoints));
+asort($points);
+printf("Part 1 answer: the size of the largest area that is not infinite is: %d\n", Amax($points));
 
 $size=0; foreach(range(0,$maxx) as $i) foreach(range(0,$maxy) as $j) if($d[$i][$j]<10000) $size++;
 printf("Part 2 answer: the size of the region containing all locations which have a total distance to all given coordinates of less than 10000 is: %d \n", $size);
