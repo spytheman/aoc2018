@@ -11,17 +11,19 @@ function Amap(array $a, $f): array { return array_map($f, $a); }
 function Amapkv(array $a, $f): array { return array_map($f, array_keys($a), $a); }
 function Afilter(array $a, $f): array { return array_filter($a, $f); }
 function Areduce(array $a, $f, $init){ return array_reduce($a, $f, $init); }
-function Amax(array $a){ return array_reduce($a, 'max', Afirst($a)); }
-function Amin(array $a){ return array_reduce($a, 'min', Afirst($a)); }
-function Amax_by_key(array $a){ $k=Amax(Akeys($a)); return $a[$k]; }
-function Amin_by_key(array $a){ $k=Amin(Akeys($a)); return $a[$k]; }
+function Amax(array $a){ $m=reset($a); foreach($a as $e)if($m<$e)$m=$e; return $m;}
+function Amin(array $a){ $m=reset($a); foreach($a as $e)if($m>$e)$m=$e; return $m;}
+function Amaxkv(array $a){ $mk=key($a);$mv=reset($a); foreach($a as $k=>$e)if($mv<$e){$mv=$e; $mk=$k;} return [$mk,$mv]; }
+function Aminkv(array $a){ $mk=key($a);$mv=reset($a); foreach($a as $k=>$e)if($mv>$e){$mv=$e; $mk=$k;} return [$mk,$mv]; }
+function Amax_by_key(array $a){ $mk=key($a);$mv=reset($a); foreach($a as $k=>$v) if($mk<$k){$mk=$k;$mv=$v;} return $mv; }
+function Amin_by_key(array $a){ $mk=key($a);$mv=reset($a); foreach($a as $k=>$v) if($mk>$k){$mk=$k;$mv=$v;} return $mv; }
 function Asum(array $a){ return array_sum($a); }
 function Aprod(array $a){ return array_product($a); }
-function ACountAtLeastX(array $a, int $x): array { return array_filter($a, function($aa) use ($x) { return count($aa)>$x; }); }
+function ACountAtLeastX(array $a, int $x): array { $y=[]; foreach($a as $aa)if(count($aa)>$x)$y[]=$aa; return $y;}
 function Akeys(array $a){ return array_keys($a); }
 function Avals(array $a){ return array_values($a); }
 function Apart(array $a, int $start, int $len=0){ return array_slice($a, $start, $len); }
-function Acount(array $a, $what){ return count(array_filter($a, function($v) use ($what) { return $v === $what; })); }
+function Acount(array $a, $what){ $c=0; foreach($a as $e) if($e===$what)$c++; return $c; }
 function Alen(array $a): int { return count($a); }
 function Ahas(array $a, $what): bool { return in_array($what, $a, true); }
 function Ahas_key(array $a, $what): bool { return array_key_exists($what, $a); }
