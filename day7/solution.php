@@ -2,8 +2,8 @@
 <?php 
 include("common.php");
 $lines = read_input();
-define('TASK_WORKER_COUNT', 2); // should be 5 in production
-define('TASK_MIN_DURATION', 0); // should be 60 in production
+define('TASK_WORKER_COUNT', 5); // should be 5 in production
+define('TASK_MIN_DURATION', 60); // should be 60 in production
 
 $c=0;
 $nodeIDs = []; $edges = [];
