@@ -33,15 +33,15 @@ function Azip2(array $a1, array $a2): array { return array_map(function($a,$b){ 
 function Azip3(array $a1, array $a2, array $a3): array { return array_map(function($a,$b,$c){ return [$a,$b,$c]; }, $a1, $a2, $a3); }
 function Areverse(array $a): array { return array_reverse($a, true); }
 function Acolumn(array $a, $colname='id',$colindexname=null): array { return array_column($a, $colname,$colindexname); }
-function Aareall(array $a, $f): bool {
+function Aall(array $a, $f): bool {
     $res = true; foreach($a as $e)if(!$f($e)){ $res = false; break; }
     return $res;
 }
-function Afirstmatching(array $a, $f){
+function Afirst_matching(array $a, $f){
     foreach($a as $k=>$e)if($f($e,$k)){ return $e; }
     return false;
 }
-function Afirstmatchingkv(array $a, $f): array {
+function Afirst_matchingkv(array $a, $f): array {
     foreach($a as $k=>$e)if($f($e,$k)){ return [$k,$e]; }
     return false;
 }
