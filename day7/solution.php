@@ -69,11 +69,7 @@ while(true){
             $runningWorkers++;
         }
     }
-    /*
-    printf("t: %3d | RW: %d | workers: [%18s] | doing: [%25s] | done: [%20s]| uncompleted: [%10s] | unblocked: [%s] \n",
-        $t, $runningWorkers, ve($workers), ve($doing), ve($done), join('', $uncompleted), ve($unblockedTasks));
-    */
-    printf("t: %3d | RW: %d | workers: [ %6s ] | done: [ %-10s ]\n", $t, $runningWorkers, join('', Acolumn($workers,0)), join('',Avals($done)));
+    //printf("t: %3d | RW: %d | workers: [ %6s ] | done: [ %-10s ]\n", $t, $runningWorkers, join('', Acolumn($workers,0)), join('',Avals($done)));
 }
 printf("Part 2 total time: %d\n",$t);
 

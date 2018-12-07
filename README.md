@@ -53,3 +53,4 @@ Task | Solution | Comment
 [Day 4: Repose Record](https://adventofcode.com/2018/day/4) | [day4/solution.php](day4/solution.php) | This one took much more time than I expected.
 [Day 5: Alchemical Reduction](https://adventofcode.com/2018/day/5) | [day5/solution.php](day5/solution.php) | Using range/2 and Azip2/2 to make the pairs that had to be removed in advance, was easy and quick ... In retrospect, a simple scanner would be quicker though.
 [Day 6: Chronal Coordinates](https://adventofcode.com/2018/day/6) | [day6/solution.php](day6/solution.php) | NB: in future I really should iterate and do testing on the given example input *first*, because each run on the full input took >10s. Also 'Manhattan distance' = abs(dx) + abs(dy) , and NOT abs(dx+dy) .
+[Day 7: The Sum of Its Parts](https://adventofcode.com/2018/day/7) | [day7/solution.php](day7/solution.php) | NB: topological sorting and graphs in general are NOT my strong suit. Should exercise them more.
