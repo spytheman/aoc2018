@@ -40,7 +40,7 @@ while(true){
     $t++;
     $runningWorkers = 0;
     foreach($workers as $wi=>&$worker){
-        $unblockedTasks = array_diff(Akeys(array_filter($taskBlocks, function($x){ return count($x)===0; })), $doing); $remaining = $unblockedTasks; $nRemainingTasks = count($remaining);
+        $unblockedTasks = array_diff(Akeys(array_filter($taskBlocks, function($x){ return count($x)===0; })), $doing); $nRemainingTasks = count($unblockedTasks);
         //printf("worker %3d | unblockedTasks: %2d, [%s] .\n", $wi, count($unblockedTasks), join("",$unblockedTasks));
 
         $cTask = $worker[0];
@@ -52,10 +52,10 @@ while(true){
                 $doing = array_filter($doing, function($e) use($cTask) { return ($cTask !== $e);} );
                 $uncompleted = array_filter($uncompleted, function($e) use ($cTask) { return $cTask !== $e; } );
                 $worker = ['.', 0];
-                $unblockedTasks = array_diff(Akeys(array_filter($taskBlocks, function($x){ return count($x)===0; })), $doing); $remaining = $unblockedTasks; $nRemainingTasks = count($remaining);
+                $unblockedTasks = array_diff(Akeys(array_filter($taskBlocks, function($x){ return count($x)===0; })), $doing); $nRemainingTasks = count($unblockedTasks);
             }
             if($nRemainingTasks>0){
-                $cTask = array_shift($remaining); $nRemainingTasks--;
+                $cTask = array_shift($unblockedTasks); $nRemainingTasks--;
                 //printf(">>> W%d STARTED task %s .\n", $wi, $cTask);
                 $worker[0] = $cTask;
                 $worker[1] = $times[$cTask];
