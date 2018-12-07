@@ -3,6 +3,7 @@ define('SFILE', realpath($_SERVER['PHP_SELF']));
 define('SDIR', dirname(SFILE));
 ini_set('memory_limit', '512M');
 
+function Azeros(int $howmany, int $n=0): array { return array_fill(0,$howmany,$n); }
 function Afirst(array $a){ return reset($a); }
 function Alast(array $a){  return end($a); }
 function Afirstkv(array $a){ $v=reset($a); $k=key($a); return [$k,$v]; }

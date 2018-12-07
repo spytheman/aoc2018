@@ -5,7 +5,7 @@ $lines = read_input();
 $x=[];$y=[];
 foreach($lines as $line) sscanf($line, "%d, %d", $x[], $y[]);
 $maxx = Amax($x); $maxy = Amax($y); $n=count($x); $coords = range(0,$n-1);
-$d=[0=>[]]; $g=[0=>[]]; $areas=array_fill(0,$n,0);
+$d=[0=>[]]; $g=[0=>[]]; $areas=Azeros($n);
 foreach(range(0,$maxx) as $i){
     foreach(range(0,$maxy) as $j){
         @$g[$i][$j]=0;
