@@ -18,5 +18,5 @@ foreach($lines as $line){
     }
 }
 $omap = ACountAtLeastX($map,1);
-printf("Overlapping tiles of the map: %d\n",count($omap));
-printf("Claims with no overlap: %s\n",ve(Akeys($cids)));
+printf("Part 1 answer (overlapping tiles of the map) is: %d\n",count($omap));
+printf("Part 2 answer (claims with no overlap): %s\n",Afirst(Akeys($cids)));
