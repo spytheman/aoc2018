@@ -8,10 +8,8 @@ define('TASK_MIN_DURATION', 60); // should be 60 in production
 $c=0;
 $nodeIDs = []; $edges = [];
 foreach($lines as $line){
-    //printf("%04d: %s\n", $c, $line);
     if(preg_match_all("/Step (.) must be finished before step (.) can begin/", $line, $b)){
         [$s,$e]=[$b[1][0], $b[2][0]];
-        //printf("%s %s\n", $s, $e);
         $nodeIDs[]=$s;
         $nodeIDs[]=$e;
         $edges[]=[$s,$e];
@@ -19,8 +17,6 @@ foreach($lines as $line){
     $c++;
 }
 $nodeIDs=array_unique($nodeIDs); sort($nodeIDs);
-printf("nodeIDs: %s\n", ve($nodeIDs));
-printf("edges: %s\n", ve($edges));
 [$tasks,$taskBlocks]=topological_sort($nodeIDs,$edges);
 printf("Part 1 task order should be %s\n", join("", $tasks));
 
@@ -41,12 +37,10 @@ while(true){
     $runningWorkers = 0;
     foreach($workers as $wi=>&$worker){
         $unblockedTasks = array_diff(Akeys(array_filter($taskBlocks, function($x){ return count($x)===0; })), $doing); $nRemainingTasks = count($unblockedTasks);
-        //printf("worker %3d | unblockedTasks: %2d, [%s] .\n", $wi, count($unblockedTasks), join("",$unblockedTasks));
 
         $cTask = $worker[0];
         if($worker[1]===0){
             if($cTask!=='.'){
-                //printf(">>> W%d FINISHED task %s .\n", $wi, $cTask);
                 unset($taskBlocks[ $cTask ]); foreach($taskBlocks as &$tlist) $tlist = array_diff($tlist, [$cTask]);
                 $done["t{$t}w{$wi}"] = $cTask;
                 $doing = array_filter($doing, function($e) use($cTask) { return ($cTask !== $e);} );
@@ -56,7 +50,6 @@ while(true){
             }
             if($nRemainingTasks>0){
                 $cTask = array_shift($unblockedTasks); $nRemainingTasks--;
-                //printf(">>> W%d STARTED task %s .\n", $wi, $cTask);
                 $worker[0] = $cTask;
                 $worker[1] = $times[$cTask];
                 $doing["w{$wi}"]=$cTask;
