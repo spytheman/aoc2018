@@ -2,7 +2,6 @@
 <?php 
 include("common.php");
 $digits = line2digits(join(' ', read_input()));
-printf("Digits: [ %s ]\n", join(',', $digits));
 global $nodes; $nodes = [];
 function newNode(){
     static $name='A';
@@ -49,9 +48,10 @@ function readNode(array $digits, int $i){
     return $node;
 }
 $root = readNode($digits, 0);
-foreach($nodes as $n){
-    printf("Node %s , starts at: %d , size: %d  | value %d\n", $n['name'], $n['index'], $n['size'], $n['value']);
-}
+//foreach($nodes as $n)
+//    printf("Node %s , starts at: %d , size: %d  | value %d\n",
+//                 $n['name'], $n['index'], $n['size'], $n['value']);
+
 $metadataSum = Asum(Amap($nodes, function($n){ return Asum($n['metadata']);}));
 printf("Part 1 answer (the sum of all metadata entries) is: %d\n", $metadataSum);
 printf("Part 2 answer (the value of the root node) is: %d\n", $root['value']);
