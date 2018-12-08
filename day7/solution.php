@@ -25,9 +25,6 @@ foreach($times as $k=>&$v)$v+=TASK_MIN_DURATION;
 
 $nWorkers = TASK_WORKER_COUNT; $workers=[]; for($i=0; $i<$nWorkers; $i++) $workers[$i]=['.', 0];
 
-function Aprintv(array $a, string $aname='A'){ printf("| %s: [%s] ", $aname, join(',', $a)); }
-function newline(){ echo "\n";}
-
 $t=-1; $done=[]; $doing = []; $uncompleted = $tasks;
 
 while(true){
