@@ -21,7 +21,7 @@ PLACE *newPlace(int v){
    return p;
 }
 
-long game(int np, int nm){
+long game(char *label, int np, int nm){
    long *players = malloc(np * sizeof(long));
    PLACE *places = newPlace(0);
    PLACE *cp = places;
@@ -46,6 +46,7 @@ long game(int np, int nm){
       p = (p + 1 ) % np;
    }
    long maxp=players[0]; for(long i=0;i<np;i++) if(maxp<players[i])maxp=players[i];
+   printf("%s Highscore (for %5d players and %8d marbles) is: %18ld\n", label, np, nm, maxp);
    return maxp;
 }
 
@@ -54,6 +55,7 @@ int main(){
    int np, nm;
    while (fgets(line, 1024, stdin)){
       sscanf(line, "%d players; last marble is worth %d points\n", &np, &nm);
-      printf("Highscore (for %3d players and %5d marbles) is: %10ld\n", np, nm, game(np, nm));
+      game("Part 1", np, nm);
+      game("Part 2", np, 100*nm);
    }
 }
