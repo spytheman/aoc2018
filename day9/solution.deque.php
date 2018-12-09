@@ -1,5 +1,7 @@
 #!/usr/bin/env php
-<?php 
+<?php
+// The code here is a nearly direct port of the wonderful Python deque solution at:
+// https://www.reddit.com/r/adventofcode/comments/a4i97s/2018_day_9_solutions/ebepyc7/
 include("common.php");
 $lines = read_input();
 foreach($lines as $line){
