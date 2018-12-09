@@ -15,17 +15,6 @@ PLACE *insertAfter(PLACE * z, PLACE * newPlace){
    return newPlace;
 }
 
-void printPlaces(PLACE places[], long howmany){
-   long n = 0;
-   while (n < howmany){
-      printf("%3ld", places->m);
-      places = places->next;
-      if (!places)break;
-      n++;
-   }
-   printf("\n");
-}
-
 PLACE *new_place(long v){
    PLACE *p = malloc(sizeof(PLACE));
    p->m = v; p->next = 0; p->prev = 0;
@@ -33,7 +22,7 @@ PLACE *new_place(long v){
 }
 
 long game(int np, int nm){
-   printf("      Starting game with %d players and %d marbles ...\n", np, nm);
+   //printf("      Starting game with %d players and %d marbles ...\n", np, nm);
    long *players = malloc(np * sizeof(long));
    PLACE *places = new_place(0);
    PLACE *cp = places;
@@ -41,29 +30,16 @@ long game(int np, int nm){
    long c = 0;
    long nc = 0;
    long placesLength = 1;
-   long checkpoint = 1;
-   while(1){
-      if(checkpoint<nm) checkpoint*=10;
-      else{
-         checkpoint/=10;
-         break;
-      }
-   }
-
+   //long checkpoint = 1; while(1){ if(checkpoint<nm){ checkpoint*=10;}else{ checkpoint/=10; break; } }
    cp->next = cp->prev = cp;
    for (int m = 1; m <= nm; m++){
       PLACE *newPlace = new_place(m);
-      if (0 == m % checkpoint){
-         printf("Placing marble %d.\n", m);
-      }
+      //if (0 == m % checkpoint){  printf("Placing marble %d.\n", m);  }
       if (0 == m % 23){
          PLACE *removed = cp->prev->prev->prev->prev->prev->prev->prev;
          players[p] += m;
          players[p] += removed->m;
-         removed->prev->next = removed->next;
-         removed->next->prev = removed->prev;
-         cp = removed->next;
-         free(removed);
+         removed->prev->next = removed->next; removed->next->prev = removed->prev; cp = removed->next; free(removed);
          placesLength--;
       }else{
          nc = (c + 2) % placesLength;
@@ -72,15 +48,9 @@ long game(int np, int nm){
          c = nc;
          placesLength++;
       }
-      //printf("player %3d | marble: %3d | cp.m: %3d | c: %3d | places: ", p, m, cp->m, c); printPlaces(places, placesLength);
-      p++;
-      p = (p > np) ? 1 : p;
+      p = (p + 1 > np) ? 1 : p + 1;
    }
-   long maxp=players[0];
-   for(long i=0;i<np;i++){
-      //printf("    player %d = %d\n", i, players[i]);
-      if(maxp<players[i])maxp=players[i];
-   }
+   long maxp=players[0]; for(long i=0;i<np;i++) if(maxp<players[i])maxp=players[i];
    return maxp;
 }
 
