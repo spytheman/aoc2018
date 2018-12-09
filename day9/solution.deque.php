@@ -1,7 +1,5 @@
 #!/usr/bin/env php
 <?php
-// The code here is a nearly direct port of the wonderful Python deque solution at:
-// https://www.reddit.com/r/adventofcode/comments/a4i97s/2018_day_9_solutions/ebepyc7/
 include("common.php");
 $lines = read_input();
 foreach($lines as $line){
@@ -10,6 +8,8 @@ foreach($lines as $line){
     game("Part 2", $nPlayers, 100 * $nMarbles);
 }
 function game($label='', int $nPlayers, int $nMarbles){
+    // The code here is a nearly direct port of the wonderful Python deque solution at:
+    // https://www.reddit.com/r/adventofcode/comments/a4i97s/2018_day_9_solutions/ebepyc7/
     $player = 0;
     $scores = [];
     $circle = new \Ds\Deque([0]);
