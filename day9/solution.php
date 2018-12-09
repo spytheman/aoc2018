@@ -1,14 +1,16 @@
 #!/usr/bin/env php
 <?php 
-include("common.php");
+include("solution.deque.php");
+exit(0);
+/// The following is the code to the old array_splice based solution (too slow for part 2):
 $lines =  read_input();
 $nPlayers=0; $nMarbles=0;
 foreach($lines as $line) {
     [$nPlayers, $nMarbles] = line2digits($line);
-    printf("Part 1 ");game("Part 1", $nPlayers, $nMarbles);
-    printf("Part 2 ");game("Part 2", $nPlayers, $nMarbles*100);
+    printf("Part 1 ");slow_game("Part 1", $nPlayers, $nMarbles);
+    printf("Part 2 ");slow_game("Part 2", $nPlayers, $nMarbles*100);
 }
-function game(string $label, int $nPlayers, int $nMarbles): int {
+function slow_game(string $label, int $nPlayers, int $nMarbles): int {
     if($nMarbles>9000){
         printf("!!!!!!! marbles: %d are over 9000. Try instead 'solution.deque.php' or the C based 'solution' .\n",$nMarbles);
         return 0;
