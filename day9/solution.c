@@ -25,7 +25,7 @@ long game(int np, int nm){
    long *players = malloc(np * sizeof(long));
    PLACE *places = newPlace(0);
    PLACE *cp = places;
-   long p = 1;
+   int  p = 0;
    int  c = 0;
    int  nc = 0;
    int  placesLength = 1;
@@ -43,7 +43,7 @@ long game(int np, int nm){
          c = nc;
          placesLength++;
       }
-      p = (p + 1 > np) ? 1 : p + 1;
+      p = (p + 1 ) % np;
    }
    long maxp=players[0]; for(long i=0;i<np;i++) if(maxp<players[i])maxp=players[i];
    return maxp;
