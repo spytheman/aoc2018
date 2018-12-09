@@ -5,12 +5,12 @@ $lines =  read_input();
 $nPlayers=0; $nMarbles=0;
 foreach($lines as $line) {
     [$nPlayers, $nMarbles] = line2digits($line);
-    printf("Part 1 answer ");game($nPlayers, $nMarbles);
-    printf("Part 2 answer ");game($nPlayers, $nMarbles*100);
+    printf("Part 1 ");game("Part 1", $nPlayers, $nMarbles);
+    printf("Part 2 ");game("Part 2", $nPlayers, $nMarbles*100);
 }
-function game(int $nPlayers, int $nMarbles): int {
-    if($nMarbles>10000){
-        system(sprintf("echo '%d players; last marble is worth %d points' | %s/solution", $nPlayers, $nMarbles, SDIR));
+function game(string $label, int $nPlayers, int $nMarbles): int {
+    if($nMarbles>9000){
+        printf("!!!!!!! marbles: %d are over 9000. Try instead 'solution.deque.php' or the C based 'solution' .\n",$nMarbles);
         return 0;
     }
     $placed = [0];
@@ -36,6 +36,6 @@ function game(int $nPlayers, int $nMarbles): int {
         if ($p > $nPlayers) $p = 1;
     }
     $pv = Amax($players);
-    printf("Highscore (for  %d players and %d marbles) is: %d\n", $nPlayers, $nMarbles, $pv);
+    printf("%s Highscore (for %5d players and %8d marbles) is: %18d \n", $label, $nPlayers, $nMarbles, $pv);
     return $pv;
 }
