@@ -38,4 +38,3 @@ function line2Highscore($nPlayers, $nMarbles){
     printf("Part 1 answer (winning score) is: %d, for nplayers: %d and nmarbles: %d .\n", $pv, $nPlayers, $nMarbles);
     return $pv;
 }
-line2Highscore($nPlayers, $nMarbles * 100);
