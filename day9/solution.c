@@ -14,7 +14,11 @@ PLACE *insertAfter(PLACE * z, PLACE * nPlace){
    x->next = nPlace; y->prev = nPlace;
    return nPlace;
 }
-
+PLACE * unlinkPlace(PLACE *removed){
+   removed->prev->next = removed->next; 
+   removed->next->prev = removed->prev; 
+   return removed;
+}
 PLACE *newPlace(int v){
    PLACE *p = malloc(sizeof(PLACE));
    p->m = v; p->next = p->prev = p;
@@ -32,10 +36,9 @@ long game(char *label, int np, int nm){
    for (int m = 1; m <= nm; m++){
       PLACE *nPlace = newPlace(m);
       if (0 == m % 23){
-         PLACE *removed = cp->prev->prev->prev->prev->prev->prev->prev;
-         players[p] += m;
-         players[p] += removed->m;
-         removed->prev->next = removed->next; removed->next->prev = removed->prev; cp = removed->next;
+         PLACE *removed = unlinkPlace(cp->prev->prev->prev->prev->prev->prev->prev);
+         players[p] += (m + removed->m);
+         cp = removed->next;
          placesLength--;
       }else{
          nc = (c + 2) % placesLength;
