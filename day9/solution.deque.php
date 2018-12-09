@@ -15,13 +15,13 @@ function game($label='', int $nPlayers, int $nMarbles){
     $circle = new \Ds\Deque([0]);
     foreach(range(1, $nMarbles) as $m){
         if(0===$m%23){
-            $circle->rotate(-7);
-            $points = $circle->pop() + $m;
+            $circle->rotate(7);
+            $points = $circle->shift() + $m;
             @$scores[$player] += $points;
-            $circle->rotate(1);
+            $circle->rotate(-1);
         }else{
-            $circle->rotate(1);
-            $circle->push($m);
+            $circle->rotate(-1);
+            $circle->unshift($m);
         }
         $player = ($player+1) % $nPlayers;
     }
