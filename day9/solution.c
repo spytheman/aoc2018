@@ -7,9 +7,8 @@ typedef struct place{
    struct place *next;
 }PLACE;
 
-PLACE *insertAfter(PLACE * z, PLACE * nPlace){
-   PLACE *x = z;
-   PLACE *y = z->next;
+PLACE *insertAfter(PLACE * x, PLACE * nPlace){
+   PLACE *y = x->next;
    nPlace->prev = x; nPlace->next = y;
    x->next = nPlace; y->prev = nPlace;
    return nPlace;
