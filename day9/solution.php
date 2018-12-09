@@ -5,11 +5,14 @@ $lines =  read_input();
 $nPlayers=0; $nMarbles=0;
 foreach($lines as $line) {
     [$nPlayers, $nMarbles] = line2digits($line);
-    if($nMarbles>10000)system(sprintf("echo '%s' | %s/solution", $line, SDIR));
-    else line2Highscore($nPlayers, $nMarbles);
+    printf("Part 1 answer ");game($nPlayers, $nMarbles);
+    printf("Part 2 answer ");game($nPlayers, $nMarbles*100);
 }
-function line2Highscore($nPlayers, $nMarbles){
-    //printf("Calculating highscore for %3d players and %5d marbles ...\n", $nPlayers, $nMarbles);
+function game(int $nPlayers, int $nMarbles): int {
+    if($nMarbles>10000){
+        system(sprintf("echo '%d players; last marble is worth %d points' | %s/solution", $nPlayers, $nMarbles, SDIR));
+        return 0;
+    }
     $placed = [0];
     $players = Azeros($nPlayers+1);
     $marbles = range(1, $nMarbles);
@@ -19,7 +22,6 @@ function line2Highscore($nPlayers, $nMarbles){
         if (0 === ($m % 23)) {
             $removedIndex = (($placedLength + $c - 7) % $placedLength) + 1;
             $removed = $placed[$removedIndex];
-            //printf("------> M: %d ; Removing %d at index %d\n", $m, $removed, $removedIndex);
             array_splice($placed, $removedIndex, 1);
             $players[$p] += ($m + $removed);
             $c = $removedIndex - 1;
@@ -30,12 +32,10 @@ function line2Highscore($nPlayers, $nMarbles){
             $c = $newC;
             $placedLength++;
         }
-        //printf("p: %2d , c: %2d, m: %2d, placed: %s\n", $p, $c, $m, join(' ', $placed));
         $p++;
         if ($p > $nPlayers) $p = 1;
     }
-    //Aprintv($players, "players"); endl();
     $pv = Amax($players);
-    printf("Part 1 answer (winning score) is: %d, for nplayers: %d and nmarbles: %d .\n", $pv, $nPlayers, $nMarbles);
+    printf("Highscore (for  %d players and %d marbles) is: %d\n", $nPlayers, $nMarbles, $pv);
     return $pv;
 }
