@@ -5,7 +5,8 @@ $lines =  read_input();
 $nPlayers=0; $nMarbles=0;
 foreach($lines as $line) {
     [$nPlayers, $nMarbles] = line2digits($line);
-    line2Highscore($nPlayers, $nMarbles);
+    if($nMarbles>10000)system(sprintf("echo '%s' | %s/solution", $line, SDIR));
+    else line2Highscore($nPlayers, $nMarbles);
 }
 function line2Highscore($nPlayers, $nMarbles){
     //printf("Calculating highscore for %3d players and %5d marbles ...\n", $nPlayers, $nMarbles);
