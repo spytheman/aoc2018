@@ -26,24 +26,16 @@ PLACE *newPlace(int v){
 
 long game(char *label, int np, int nm){
    long *players = malloc(np * sizeof(long));
-   PLACE *places = newPlace(0);
-   PLACE *cp = places;
+   PLACE *cp = newPlace(0);
    int  p = 0;
-   int  c = 0;
-   int  nc = 0;
-   int  placesLength = 1;
    for (int m = 1; m <= nm; m++){
       PLACE *nPlace = newPlace(m);
       if (0 == m % 23){
          PLACE *removed = unlinkPlace(cp->prev->prev->prev->prev->prev->prev->prev);
          players[p] += (m + removed->m);
          cp = removed->next;
-         placesLength--;
       }else{
-         nc = (c + 2) % placesLength;
          cp = insertAfter(cp->next, nPlace);
-         c = nc;
-         placesLength++;
       }
       p = (p + 1 ) % np;
    }
