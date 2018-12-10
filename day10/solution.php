@@ -7,7 +7,8 @@ $points = [];
 $c=0;
 foreach($lines as $line) $points[]=line2digits($line);
 /// the constants here are produced by tweaking, just so that the apropriate area of the grid is shown
-/// I knew what to seek for, by abusing excel as a ploter :-)
+/// I knew what to seek for, by abusing a spreadsheet as a ploter :-)
+/// See https://docs.google.com/spreadsheets/d/1orToWeVnJ4X8fV4riD4lkM0gjJgEQerQ6bQK0tEE1G0/edit?usp=sharing
 $gsize = 600; $mx = 500; $my = 200; $opx = 420; $opy = 50;
 $hgsize = $gsize/2; $sx=$gsize; $sy=$gsize; $cx=$sx/$mx; $cy=$sy/$my;
 while(true){
