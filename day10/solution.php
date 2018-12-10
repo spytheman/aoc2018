@@ -7,7 +7,7 @@ $points = []; foreach($lines as $line) $points[]=line2digits($line);
 $minwh = 999999; $grid = [];
 foreach(range(0,11000) as $step){
     $xpoints = []; $ypoints = [];
-    foreach($points as &$p) {
+    foreach($points as $p) {
         $xpoints[]= $p[0] + $step*$p[2]; 
         $ypoints[]= $p[1] + $step*$p[3];
     }
