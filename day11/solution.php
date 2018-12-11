@@ -27,7 +27,6 @@ printf("Precalculating isums for serial: %d ... done\n", $serial);
 function grid2tops($grid, $maxsize=3){
     global $isums;
     $tops=[0,0,0,0,0];
-    $osum = 0;
     foreach(range(1,$maxsize) as $size){
         for($y=1;$y<=300-$size;$y++){
             $ys=$y+$size; 
@@ -49,9 +48,7 @@ function grid2tops($grid, $maxsize=3){
                 }
             }
         }
-        //printf("size: %3d, tops: %s\n", $size, ve($tops));
-        if($osum>=$tops[0]) break;
-        $osum = $tops[0];
+        if( $size % 10 === 0 ) printf("size: %3d, tops: %s\n", $size, ve($tops));
     }
     return $tops;
 }
@@ -63,5 +60,5 @@ printf("\n");
 
 $tops = grid2tops($grid, 300);
 printf("Part 2 answer: %d,%d,%d\n", $tops[1], $tops[2], $tops[3]);
-showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3],3);
+showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
 printf("\n");
