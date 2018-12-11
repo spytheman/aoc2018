@@ -98,29 +98,29 @@ function rectangleEach($topx, $topy, $w, $h, $f){
         }
     }     
 }
-function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5){
-    printf("\n");
-    printf("# Grid zone {topx,topy}={%d,%d}, {w,h}={%d,%d}\n", $topx, $topy, $w, $h);
-    printf("# --------------------------------------------------\n#");
-    $ysums=[]; $yproducts = [];
+define('SEPARATORLINE', "#------------------------------------------------------------------------------\n");
+function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5,$ordinarysize=3){
+    $ordinarysize2 = 2 * $ordinarysize + 2;
+    $ordinarysize3 = 3 * $ordinarysize + 3;
+    printf(SEPARATORLINE);
+    printf("# Grid zone top xy={%d,%d}, w,h={%d,%d} | cellsize: %d\n", $topx, $topy, $w, $h, $ordinarysize);
+    printf(SEPARATORLINE); 
+    $yzeros=0; $ysums=0; $yproducts = 1; 
     for($y=$topy;$y<$h+$topy;$y++){
-        $xs=[]; $xp=[];
-        for($x=$topx;$x<$w+$topx;$x++){
-            $v=$grid[$y][$x]; 
-            $xs[]=$v;
-            printf("%3d ", $v);
+        $xs=0; $xp=1; $xzeros=0; $cells=[]; 
+        for($x=$topx;$x<$w+$topx;$x++) {
+            $v = $grid[$y][$x];
+            $xs += $v;
+            $xp *= $v;
+            if($v==0)$xzeros++;
+            $cells[]=sprintf("%{$ordinarysize}d", $v);
         }
-        $xsums=Asum($xs);
-        $xproducts=Aprod($xs);
-        printf(" | lsum: %5d, lproduct: %10d\n#", $xsums, $xproducts);
-        $ysums[]=$xsums; $yproducts[]=$xproducts;
+        printf("#y: %3d |zeros: %5d |ls: %{$ordinarysize2}d |lp: %{$ordinarysize2}d |%s\n", $y, $xzeros, $xs, $xp, join(' ', $cells));
+        $ysums+=$xs; $yproducts*=$xp; $yzeros+=$xzeros;
     }
-    $tsum = Asum($ysums);
-    $tproduct = Aprod($yproducts);
-    printf(" --------------------------------------------------\n");
-    printf("# Total sum: %8d\n", $tsum);
-    printf("# Total product: %10d\n", $tproduct);
-    printf("\n");
+    printf(SEPARATORLINE);
+    printf("# Area ZEROS: %-6d TSUM: %-{$ordinarysize3}d TPRODUCT: %-{$ordinarysize3}d\n", $yzeros, $ysums, $yproducts);
+    printf(SEPARATORLINE);
 }
 
 function ve($x){ return json_encode($x); }
