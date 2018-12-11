@@ -99,7 +99,7 @@ function rectangleEach($topx, $topy, $w, $h, $f){
     }     
 }
 define('SEPARATORLINE', "#------------------------------------------------------------------------------\n");
-function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5,$ordinarysize=3){
+function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5,$ordinarysize=2){
     $ordinarysize2 = 2 * $ordinarysize + 2;
     $ordinarysize3 = 3 * $ordinarysize + 3;
     printf(SEPARATORLINE);
@@ -115,7 +115,7 @@ function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5,$ordinarysize=3){
             if($v==0)$xzeros++;
             $cells[]=sprintf("%{$ordinarysize}d", $v);
         }
-        printf("#y: %3d |zeros: %5d |ls: %{$ordinarysize2}d |lp: %{$ordinarysize2}d |%s\n", $y, $xzeros, $xs, $xp, join(' ', $cells));
+        printf("#y: %3d |z: %5d |s: %{$ordinarysize2}d |p: %{$ordinarysize2}d |%s\n", $y, $xzeros, $xs, $xp, join(' ', $cells));
         $ysums+=$xs; $yproducts*=$xp; $yzeros+=$xzeros;
     }
     printf(SEPARATORLINE);
