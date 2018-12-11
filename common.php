@@ -69,7 +69,7 @@ function Acast2ints(array $a): array { return array_map('intval', $a); }
 function Ahistogram(array $a): array { return array_count_values($a); }
 function Ahistogram_update(array &$a, array $newvals){ foreach($newvals as $nv){ @$a[$nv]++; } }
 function line2array(string $line, int $chunksize=1): array {   return str_split($line, $chunksize); }
-function line2digits(string $line): array { $res = []; if(preg_match_all("/([+-]?\d+)/",$line,$b)) $res = Acast2ints(Afirst($b));  return $res; }
+function line2digits(string $line, $withsigns=true): array { $res = []; $regexp = ($withsigns) ? "/([+-]?\d+)/" : "/(\d+)/"; if(preg_match_all($regexp,$line,$b)) $res = Acast2ints(Afirst($b)); return $res; }
 function line2histogram(string $line): array {  return Ahistogram(line2array($line)); }
 function histogramMostCommon(array $histogram, int $n=1): array {
     arsort($histogram);
