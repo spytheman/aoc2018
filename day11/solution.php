@@ -19,8 +19,8 @@ function grid2tops($grid, $maxsize=3){
     $tops=[0,0,0,0,0];
     $osum = 0;
     foreach(range(1,$maxsize) as $size){
-        for($y=1;$y<=301-$size;$y++){
-            for($x=1;$x<=301-$size;$x++){
+        for($y=1;$y<=300-$size;$y++){
+            for($x=1;$x<=300-$size;$x++){
                 $s=0;
                 for($j=0;$j<$size;$j++) for($k=0;$k<$size;$k++) $s += $grid[$y + $j ][$x + $k];
                 if($tops[0]<$s){
@@ -44,6 +44,6 @@ showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
 printf("Part 1 answer: %d,%d\n", $tops[1], $tops[2]);
 printf("\n");
 
-$tops = grid2tops($grid, 16); // should be 300 but it stabilizes around 10-16 usually
+$tops = grid2tops($grid, 300);
 showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
 printf("Part 2 answer: %d,%d,%d\n", $tops[1], $tops[2], $tops[3]);
