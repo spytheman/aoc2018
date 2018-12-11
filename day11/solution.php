@@ -17,6 +17,7 @@ for($y=1;$y<=300;$y++){
 }
 function grid2tops($grid, $maxsize=3){
     $tops=[0,0,0,0,0];
+    $osum = 0;
     foreach(range(1,$maxsize) as $size){
         for($y=1;$y<=301-$size;$y++){
             for($x=1;$x<=301-$size;$x++){
@@ -26,19 +27,23 @@ function grid2tops($grid, $maxsize=3){
                     $tops[0]=$s;
                     $tops[1]=$x;
                     $tops[2]=$y;
+                    $tops[3]=$size;
                     $tops[4]=$grid[$y][$x];
                 }
             }
         }
-        $tops[3]=$size;
         printf("size: %d, tops: %s\n", $size, ve($tops));
+        if($osum>=$tops[0]) break;
+        $osum = $tops[0];
     }
     return $tops;
 }
 
 $tops = grid2tops($grid, 3);
 showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
-printf("Serial: %d ; tops [x,y,size]: [ %d,%d,%d ]\n", $serial, $tops[1], $tops[2], $tops[3]);
+printf("Part 1 answer: %d,%d\n", $tops[1], $tops[2]);
+printf("\n");
 
 $tops = grid2tops($grid, 16); // should be 300 but it stabilizes around 10-16 usually
 showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
+printf("Part 2 answer: %d,%d,%d\n", $tops[1], $tops[2], $tops[3]);
