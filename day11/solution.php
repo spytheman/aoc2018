@@ -36,17 +36,6 @@ function grid2tops($grid, $maxsize=3){
     return $tops;
 }
 
-function showGridZone($grid, $topsx, $topsy, $w=3, $h=3){
-    printf("Grid zone x: %d y: %d w: %d h: %d\n", $topsx, $topsy, $w, $h);
-    for($y=-1;$y<=$h;$y++){
-        for($x=-1;$x<=$w;$x++){
-            printf("%3d ", $grid[$y + $topsy ][$x + $topsx]);
-        }
-        endl();
-    }
-    endl();
-}
-
 $tops = grid2tops($grid, 3);
 showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
 printf("Serial: %d ; tops [x,y,size]: [ %d,%d,%d ]\n", $serial, $tops[1], $tops[2], $tops[3]);
