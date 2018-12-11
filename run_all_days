@@ -1,10 +1,8 @@
 #!/bin/bash
 
-for i in $(seq 1 25); do 
-    s="day$i/solution.php"; 
-    if [ ! -f $s ]; then continue; fi; 
-    echo; 
-    echo; 
-    echo $s ; 
-    $s | kstimer ; 
+for i in $(find ./day* -type f -name solution.php | sort -n -t/ --key=2.4) ; do
+    echo;
+    echo;
+    echo $i ;
+    $i ;
 done
