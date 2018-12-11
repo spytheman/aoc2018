@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "../common.h"
 
 int main(int argc, char **argv){
    char buf[64];
@@ -22,6 +23,6 @@ int main(int argc, char **argv){
         printf("serial: %d, x: %d, y: %d, rid: %d, power: %d, spower: '%s', d: %d, grid[x][y]: %d\n",
                serial, x, y, rid, power, buf, d, grid[y][x]);
    }
-   for(int y=0; y<=300; y++) { printf("line %3d: ", y); for(int x=0; x<=300; x++){ printf("%3d ", grid[y][x]);} printf("\n"); }
+   showGridZone(5, 7, 11, 5, 301, 301, grid);
    return 0;
 }
