@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ~/adventofcode2018/
+sleep 2;
+./prepare_for_day
