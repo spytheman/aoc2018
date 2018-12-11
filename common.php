@@ -98,6 +98,31 @@ function rectangleEach($topx, $topy, $w, $h, $f){
         }
     }     
 }
+function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5){
+    printf("\n");
+    printf("# Grid zone {topx,topy}={%d,%d}, {w,h}={%d,%d}\n", $topx, $topy, $w, $h);
+    printf("# --------------------------------------------------\n#");
+    $ysums=[]; $yproducts = [];
+    for($y=$topy;$y<$h+$topy;$y++){
+        $xs=[]; $xp=[];
+        for($x=$topx;$x<$w+$topx;$x++){
+            $v=$grid[$y][$x]; 
+            $xs[]=$v;
+            printf("%3d ", $v);
+        }
+        $xsums=Asum($xs);
+        $xproducts=Aprod($xs);
+        printf(" | lsum: %5d, lproduct: %10d\n#", $xsums, $xproducts);
+        $ysums[]=$xsums; $yproducts[]=$xproducts;
+    }
+    $tsum = Asum($ysums);
+    $tproduct = Aprod($yproducts);
+    printf(" --------------------------------------------------\n");
+    printf("# Total sum: %8d\n", $tsum);
+    printf("# Total product: %10d\n", $tproduct);
+    printf("\n");
+}
+
 function ve($x){ return json_encode($x); }
 function noSpace($line, $what=' '){ return str_replace($what, '', $line); }
 function read_input($filename=''){
