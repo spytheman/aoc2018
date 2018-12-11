@@ -4,7 +4,7 @@ include("common.php");
 $lines = read_input();
 $history = []; $cguards = []; $allminutes = range(0,59);
 foreach($lines as $line){
-    @[$y,$mon,$d, $h,$m, $cguard] = line2digits($line);
+    @[$y,$mon,$d, $h,$m, $cguard] = line2digits($line,false);
     $cdate = sprintf("%04d/%02d/%02d %02d:%02d", $y,$mon,$d,$h,$m); $ctime = strtotime($cdate);
     $history[ $ctime ] = [$line, Acast2ints([$y,$mon,$d, $h,$m, $cguard])];
     if( $cguard > 0 ) $cguards[ $cguard ] = $cguard;
