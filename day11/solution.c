@@ -29,8 +29,8 @@ void grid2tops(int maxsize, Tops *tops, GP(int,grid) ){
             }
          }
       }      
-      //printf("Try size: %3d; tops: sum: %8ld , x: %8d, y: %8d, v: %8d, size: %8d\n", size, tops->sum, tops->x, tops->y, tops->v, tops->size); fflush(stdout);
-      if(osum>=tops->sum)break;
+      printf("Try size: %3d; tops: sum: %8ld , x: %8d, y: %8d, v: %8d, size: %8d\n", size, tops->sum, tops->x, tops->y, tops->v, tops->size); fflush(stdout);
+      //if(osum>=tops->sum)break;
       osum = tops->sum;
    }
 }
@@ -52,12 +52,12 @@ int main(int argc, char **argv){
    }
    Tops tops1={0,0,0,0,0};
    grid2tops(3, &tops1, G(grid) );
-   //showGridZone(tops1.x, tops1.y, tops1.size, tops1.size, G(grid));
    printf("Part 1 answer: %d,%d\n", tops1.x, tops1.y);
+   showGridZone(tops1.x, tops1.y, tops1.size, tops1.size, G(grid));
      
    Tops tops={0,0,0,0,0};
    grid2tops(GSIZE, &tops, G(grid) );
-   //showGridZone(tops.x, tops.y, tops.size, tops.size, G(grid));
    printf("Part 2 answer: %d,%d,%d\n", tops.x, tops.y, tops.size);
+   showGridZone(tops.x, tops.y, tops.size, tops.size, G(grid));
    return 0;
 }

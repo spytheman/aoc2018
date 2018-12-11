@@ -48,17 +48,17 @@ function grid2tops($grid, $maxsize=3){
                 }
             }
         }
-        if( $size % 10 === 0 ) printf("size: %3d, tops: %s\n", $size, ve($tops));
+        if( $size % 50 === 0 ) printf("size: %3d, tops: %s\n", $size, ve($tops));
     }
     return $tops;
 }
 
 $tops = grid2tops($grid, 3);
 printf("Part 1 answer: %d,%d\n", $tops[1], $tops[2]);
-showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
-printf("\n");
+//showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
+//printf("\n");
 
 $tops = grid2tops($grid, 300);
 printf("Part 2 answer: %d,%d,%d\n", $tops[1], $tops[2], $tops[3]);
-showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
-printf("\n");
+//showGridZone($grid, $tops[1], $tops[2], $tops[3], $tops[3]);
+//printf("\n");
