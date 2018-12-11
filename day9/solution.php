@@ -1,7 +1,7 @@
 #!/usr/bin/env php
-<?php 
-include("solution.deque.php");
-exit(0);
+<?php
+include("common.php");
+system(sprintf("cat %s/input | %s/solution ", SDIR, SDIR)); exit(0); // call the C one, since the PHP variant without a deque is too slow.
 /// The following is the code to the old array_splice based solution (too slow for part 2):
 $lines =  read_input();
 $nPlayers=0; $nMarbles=0;
