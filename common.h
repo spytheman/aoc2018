@@ -1,5 +1,8 @@
 
-void showGridZone(int topx, int topy, int w, int h, int Grows, int Gcols, int grid[Grows][Gcols]){
+/// this requires that GSIZE 
+#define GP( t, x ) int Grows, int Gcols, t x [Grows][Gcols]
+
+void showGridZone(int topx, int topy, int w, int h, GP( int, grid ) ){
    printf("\n");
    printf("# Grid zone {topx,topy}={%d,%d}, {w,h}={%d,%d}\n", topx, topy, w, h);
    printf("# --------------------------------------------------\n#");
