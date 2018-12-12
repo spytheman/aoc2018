@@ -1,4 +1,5 @@
 CFLAGS=-Wall -O2
+LDLIBS=-lm
 
 solution:
 

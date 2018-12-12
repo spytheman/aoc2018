@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "../common.h"
 
 #define GSIZE 300
@@ -37,9 +38,7 @@ int main(int argc, char **argv){
    int grid[GSIZE+1][GSIZE+1];
    int serial;
    int rid, power, d;
-   int power_mod_1000;
    serial = atoi(fgets(buf,64,stdin));
-   //printf("Serial: %d\n",serial);
    for(int i=0; i<=GSIZE; i++) { 
       grid[0][i] = 0; 
       grid[i][0] = 0; 
@@ -47,15 +46,11 @@ int main(int argc, char **argv){
    for(int y=1; y<=GSIZE; y++) {
       for(int x=1; x<=GSIZE; x++){
          rid = x + 10;
-         power = (((rid * y) + serial) * rid); 
-         d = 0;
-         power_mod_1000 = power % 1000;
-         sprintf(buf, "%03d", power_mod_1000);
-         d = buf[0] - '0';
+         power = (((rid * y) + serial) * rid);         
+         d = ((int)floor(power/100)) % 10;
          grid[y][x] = d - 5;
       }
    }
-   //showGridZone(0,0, 10,10, G(grid));
    
    // Precalculate an integral image to speed up grid2tops:
    memcpy( isum, grid, (GSIZE+1)*(GSIZE+1)*sizeof(int) ); 
