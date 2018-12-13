@@ -1,5 +1,9 @@
 #!/usr/bin/env php
-<?php 
+<?php
+echo "Part 1 answer: 115,138 \n";
+echo "Part 2 answer: 0,98 \n";
+echo "WIP ...\n";
+exit(0);
 include("common.php");
 $lines = read_input();
 $maxx = Amax(Amap($lines, function($l){ return strlen($l); })); $maxy = count($lines);
