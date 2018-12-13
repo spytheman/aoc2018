@@ -109,15 +109,16 @@ function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5,$ordinarysize=2, $show
     for($y=$topy;$y<$h+$topy;$y++){
         $xs=0; $xp=1; $xzeros=0; $cells=[]; 
         for($x=$topx;$x<$w+$topx;$x++) {
-            $v = $grid[$y][$x];
+            $g = $grid[$y][$x];
+            $v = (int) $g;
             $xs += $v;
             $xp *= $v;
             if($v==0)$xzeros++;
-            $cells[]=sprintf("%{$ordinarysize}d", $v);
+            $cells[]=sprintf("%{$ordinarysize}s", $g);
         }
         printf("#y: %3d |z: %5d |s: %{$ordinarysize2}d |", $y, $xzeros, $xs);
         if($showproduct)printf("p: %{$ordinarysize2}d |", $xp);
-        printf("%s\n", join(' ', $cells));
+        printf("%s\n", join('', $cells));
         $ysums+=$xs; $yproducts*=$xp; $yzeros+=$xzeros;
     }
     printf(SEPARATORLINE);
