@@ -59,7 +59,6 @@ function move(array $tracks, array &$cars, int $maxx, int $maxy): bool  {
         foreach($pcis as $ci) printf("  crashed car %d: %s\n", $ci, ve($cars[$ci]));
         return false;
     }    
-    showGridZone($g,0,0, $maxx,$maxy, 1);
     return true;
 }
 while(move($tracks, $cars, $maxx, $maxy));
