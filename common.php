@@ -99,16 +99,25 @@ function rectangleEach($topx, $topy, $w, $h, $f){
     }     
 }
 define('SEPARATORLINE', "#------------------------------------------------------------------------------\n");
-function showGridZone($grid, $topx=0, $topy=0, $w=5, $h=5,$ordinarysize=2, $showproduct=false){
-    $ordinarysize2 = 2 * $ordinarysize + 2;
-    $ordinarysize3 = 3 * $ordinarysize + 3;
+function ilimit($x, $xmax=0, $xmin=0){ return min($xmax, max($xmin, $x)); }
+function showGridZone($grid, $topx=0, $topy=0, $w=0, $h=0,$ordinarysize=2, $showproduct=false){
+    $gmaxx = count($grid[0]); $gmaxy = count($grid);    
+    $xstart = $topx; $ystart = $topy;
+    if($topx>$gmaxx)printf("# GE: topx %d > gmaxx %d\n", $topx, $gmaxx); $xstart=ilimit($xstart, $gmaxx); 
+    if($topy>$gmaxy)printf("# GE: topy %d > gmaxy %d\n", $topy, $gmaxy); $ystart=ilimit($ystart, $gmaxy);
+    $xend = ilimit($topx+(($w === 0 ) ? $gmaxx : $w), 999999, $xstart);     
+    $yend = ilimit($topy+(($h === 0 ) ? $gmaxy : $h), 999999, $ystart);
+    if($xend>$gmaxx)printf("# GE: xend %d > gmaxx %d\n", $xend, $gmaxx); $xend=ilimit($xend, $gmaxx, $xstart);
+    if($yend>$gmaxy)printf("# GE: yend %d > gmaxy %d\n", $yend, $gmaxy); $yend=ilimit($yend, $gmaxy, $ystart);
+    
+    $ordinarysize2 = 2 * $ordinarysize + 2; $ordinarysize3 = 3 * $ordinarysize + 3;
     printf(SEPARATORLINE);
-    printf("# Grid zone top xy={%d,%d}, w,h={%d,%d} | cellsize: %d\n", $topx, $topy, $w, $h, $ordinarysize);
+    printf("# Grid zone top xy={%d,%d}, wh={%d,%d} | cellsize: %d | start %d,%d | end %d,%d\n", $topx, $topy, $w, $h, $ordinarysize, $xstart, $ystart, $xend,$yend);
     printf(SEPARATORLINE); 
-    $yzeros=0; $ysums=0; $yproducts = 1; 
-    for($y=$topy;$y<$h+$topy;$y++){
+    $yzeros=0; $ysums=0; $yproducts = 1;
+    for($y=$ystart;$y<$yend;$y++){
         $xs=0; $xp=1; $xzeros=0; $cells=[]; 
-        for($x=$topx;$x<$w+$topx;$x++) {
+        for($x=$xstart;$x<$xend;$x++) {
             $g = $grid[$y][$x];
             $v = (int) $g;
             $xs += $v;
