@@ -5,7 +5,7 @@ $n = (int) join('', read_input());
 $nstart = $n;
 $howmanywanted = 10;
 $elves=[0,1];
-$initialrecipes = Acast2ints(line2array($n));
+$initialrecipes = [3,7];
 printf("N: %d | Initial recipes: %s\n",$n,ve($initialrecipes));
 $recipes = Azeros($n+2*$howmanywanted); $lastrecipe = 0;
 foreach($initialrecipes as $k=>$x) { $recipes[ $lastrecipe ] = $x; $lastrecipe++; }
