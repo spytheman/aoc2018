@@ -10,7 +10,7 @@ printf("N: %d | Initial recipes: %s\n",$n,ve($initialrecipes));
 $recipes = Azeros($n+2*$howmanywanted); $lastrecipe = 0;
 foreach($initialrecipes as $k=>$x) { $recipes[ $lastrecipe ] = $x; $lastrecipe++; }
 function showState($i, $elves, $recipes, $nrecipes){
-    printf("%4d | Elves: %10s | Recipes (%5d): %s\n", $i, ve($elves), $nrecipes, ve($recipes));
+    printf("%4d | Elves: %-10s | Recipes (%5d): %s\n", $i, ve($elves), $nrecipes, ve(array_slice($recipes, 0,$nrecipes)));
 }
 $i=0; while(true){
     showState($i, $elves, $recipes, $lastrecipe);
