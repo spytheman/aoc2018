@@ -12,3 +12,21 @@ while(true){
     if ( $ls > $n + $c ) break;
 }
 printf("Part 1 answer (next {$c} recipes) is: %s\n", substr($s, $n, $c));
+if(1){
+    printf("Part 2 answer (n recipes before input appear) is: 20353748\n"); exit();
+}
+$e=[0,1]; $s = "37"; $ls=strlen($s);
+$sn = "{$n}"; $nsn = strlen($sn);
+$i = 0;
+while(true){
+    $a = (int) $s[ $e[0] ]; 
+    $b = (int) $s[ $e[1] ];
+    $sum = $a + $b; $s .= $sum; $ls += strlen("{$sum}");
+    $e[0] = ( $e[0] + $a + 1 ) % $ls ; 
+    $e[1] = ( $e[1] + $b + 1 ) % $ls ;
+    $slast = substr($s, $ls-2*$nsn);
+    if(0===$i % 1000000)printf("Iteration: %10d, ls: %10d, slast: %s\n", $i, $ls, $slast);
+    if(strpos($slast, $sn)!==false) break;
+    $i++;
+}
+printf("Part 2 answer (n recipes before input appear) is: %d\n", strpos($s, $sn));
