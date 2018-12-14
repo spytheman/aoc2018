@@ -13,7 +13,7 @@ function showState($i, $elves, $recipes, $nrecipes){
     printf("%4d | Elves: %-10s | Recipes (%5d): %s\n", $i, ve($elves), $nrecipes, ve(array_slice($recipes, 0,$nrecipes)));
 }
 $i=0; while(true){
-    showState($i, $elves, $recipes, $lastrecipe);
+    //showState($i, $elves, $recipes, $lastrecipe);
     $er=[]; foreach($elves as $ee) $er[$ee] = $recipes[$ee];
     $esum = Acast2ints(line2array("".Asum($er)));
     foreach($esum as $d){  $recipes[ $lastrecipe ] = $d; $lastrecipe++; }
