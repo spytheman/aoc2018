@@ -25,7 +25,7 @@ $i=0;while(true){
     $e1 = ( $e1 + $b + 1 ) % $ls ;
     if(0===$i % $batchSize){
         if(0===$i % 1000000) printf("Iteration: %10d, ls: %10d\n", $i, $ls);
-        if(strpos($slast=substr($s, $ls-$batchNSN), $sn)!==false) break;
+        if(@strpos($s, $sn, $ls-$batchNSN)!==false) break;
     }
     $i++;
 }
