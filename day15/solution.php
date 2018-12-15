@@ -7,4 +7,4 @@ foreach($lines as $line){
     printf("%04d: %s\n", $c, $line);
     $c++;
 }
-readfile('output');
+readfile(SDIR.'/output');
