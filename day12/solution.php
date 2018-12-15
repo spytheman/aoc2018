@@ -45,7 +45,7 @@ for($y=0;$y<MAXY;$y++){
     for($x=0;$x<$glen;$x++){ if($g[$y][$x]) $pots[]=$x-$gcenter; }
     $cs = Asum($pots);
     $fs = remainingSum($y);
-    printf("Y: %3d | fsum: %5d | sum: %5d | ds: %5d | state: %s\n", $y, $fs, $cs, $cs - $ps, str_replace(['0','1'], [SPACE_EMPTY, SPACE_FILLED], join('', $g[$y])));
+    //printf("Y: %3d | fsum: %5d | sum: %5d | ds: %5d | state: %s\n", $y, $fs, $cs, $cs - $ps, str_replace(['0','1'], [SPACE_EMPTY, SPACE_FILLED], join('', $g[$y])));
     $ps = $cs;
 }
 $finalrepetitions = 50000000000;
