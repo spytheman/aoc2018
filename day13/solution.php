@@ -36,12 +36,13 @@ function move(array $tracks, array &$cars, int $maxx, int $maxy): array  {
 
     $g=$tracks;
     $positions=[];
-    $corders = []; foreach($cars as $k=>$c){ $corders[$k]=$c[1][1]*$maxx+$c[1][0]; }
-    asort($corders);
-    //printf("Corders: %s | cars: %s\n", ve($corders), ve($cars));
-    foreach(array_keys($corders) as $k){
+    uasort($cars, function ($c1, $c2) { return (
+                                                $c1[1][1] <   $c2[1][1] || 
+                                                $c1[1][1] === $c2[1][1] && 
+                                                $c1[1][0] <   $c2[1][0]
+                                                ) ? -1 : 1; });    
+    foreach($cars as $k=>&$c){
         printf("   moving car: %d\n",$k);
-        $c = &$cars[$k];
         [$cx, $cy] = $c[1]; [$vx, $vy] = $c2v[$c[0]]; [$nx, $ny] = [$cx+$vx, $cy+$vy]; $c[1] = [$nx,$ny]; // update car position
         $mnx = ($nx>=$maxx) ? $maxx-1 : $nx; if($mnx<0)$mnx=0;
         $mny = ($ny>=$maxy) ? $maxy-1 : $ny; if($mny<0)$mny=0;
