@@ -1,9 +1,5 @@
 #!/usr/bin/env php
 <?php
-echo "Part 1 answer: 115,138 \n";
-echo "Part 2 answer: 0,98 \n";
-echo "WIP ...\n";
-//exit(0);
 include("common.php");
 $lines = read_input();
 $maxx = Amax(Amap($lines, function($l){ return strlen($l); })); $maxy = count($lines);
@@ -53,7 +49,7 @@ function move(array $tracks, array &$cars, int $maxx, int $maxy): array  {
                 $scoords = sprintf("%d,%d", $mnx, $mny);
                 unset($cars[$k],$cars[$k2]);
                 $crashes[]=$scoords;
-                printf("X   m: %6d, crash at: %10s, between cars %s\n", $move, $scoords, ve([$k,$k2]));
+                printf("    move: %6d, crash at: %10s, between cars %s\n", $move, $scoords, ve([$k,$k2]));
                 continue 2;
             }
         }
@@ -75,7 +71,7 @@ function move(array $tracks, array &$cars, int $maxx, int $maxy): array  {
         $g[$mny][$mnx]=$cars[$k][0];
     }
     //printf("Move: %6d | cars: %s\n", $move, join(' ', Amap($cars, function($c){ return sprintf("%-22s", ve($cars[$k])); })));
-    showCars("      Cars after move: {$move}", $cars);
+    //showCars("      Cars after move: {$move}", $cars);
     $move++;
     return $crashes;
 }
@@ -85,9 +81,8 @@ while(true){
     $crashes=move($tracks, $cars, $maxx, $maxy);
     if(count($crashes)>0)break;
 }
-printf("X First crash: %s\n", $crashes[0]);
+printf("Part 1 answer (first crash coords): %s\n", $crashes[0]);
 
-printf("X -----------------------------------------------------------------------------\n");
 while(count($cars)>2){
     move($tracks, $cars, $maxx, $maxy);
 }
@@ -95,5 +90,5 @@ while(count($cars)>2){
 if(0===count($cars)){
     printf("X All cars crashed.\n");
 }else{
-    showCars("X Remaining", $cars);
+    printf("Part 2 answer (coords of remaining car) is: %s\n", join(',', array_pop($cars)[1]) );
 }
