@@ -8,15 +8,19 @@ printf("Part 1 answer (number of samples in puzzle input that behave like three 
 printf("Part 2 answer (value contained in register 0 after executing the test program) is: %d\n", part_2($input_part2,$cleansamples));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 function part_1(string $input_part1, array &$cleansamples): int {
+    $instructionSet = getInstructionSet();
     $n=0;
     $samples = explode("Before: ", $input_part1);
     $c=1; foreach($samples as $sample) {
-        $sample = trim($sample);
         if($sample==='')continue;
-        $nums = line2digits($sample);
-        $before=array_slice($nums, 0, 4); $instruction=array_slice($nums, 4, 4); $after=array_slice($nums, 8, 4);
-        $behaving = sample2working($before, $instruction, $after);
-        $cleansamples[]=['op'=>$instruction[0], 'behaves'=>$behaving];
+        $sample = trim($sample);
+        $b=[0,0,0,0]; $a=[0,0,0,0]; $behaving=[];
+        sscanf($sample, "[%d, %d, %d, %d]\n%d %d %d %d\nAfter:  [%d, %d, %d, %d]", 
+               $b[0], $b[1], $b[2], $b[3],  $iop, $ia, $ib, $ic,  $a[0], $a[1], $a[2], $a[3]);        
+        foreach($instructionSet as $iname => $ifun){
+            if( $a[ $ic ] === $ifun($b, $ia, $ib) ) $behaving[]=$iname;
+        }
+        $cleansamples[]=[$iop, $behaving];
         if(count($behaving)>=3){ $n++; }
         $c++;
     }
@@ -24,27 +28,23 @@ function part_1(string $input_part1, array &$cleansamples): int {
 }
 function part_2(string $input_part2, array $cleansamples): int {
     $instructionSet = getInstructionSet();
-    $op2names = guessInstructionNamesBasedOnSamples( $cleansamples );
+    $op2names = guessInstructionNamesBasedOnSamples( $cleansamples, array_keys($instructionSet) );
     $i2fun = []; for($i=0;$i<16;$i++){ $i2fun[ $i ] = $instructionSet[ $op2names[ $i ] ]; }
     $program = explode("\n",$input_part2);
     $reg = [0,0,0,0];
     $c=0; foreach($program as $line){
-        $instruction = line2digits( $line );
-        $reg[ $instruction[3] ] = $i2fun[ $instruction[0] ]( $reg, $instruction[1], $instruction[2]);
+        sscanf($line, "%d %d %d %d", $iop, $ia, $ib, $ic);
+        $reg[ $ic ] = $i2fun[ $iop ]( $reg, $ia, $ib );
         $c++;
     }
     return $reg[0];
 }
-function guessInstructionNamesBasedOnSamples(array $cleansamples): array {
-    $nameslikelyhoods = array_combine(
-        array_keys(getInstructionSet()),
-        array_fill(0,16, array_fill(0,16,0) )
-    );
-    foreach($cleansamples as $c) {
-        $behaves = $c['behaves'];
-        foreach($behaves as $opname) $nameslikelyhoods[ $opname ][ $c['op'] ]++;
+function guessInstructionNamesBasedOnSamples(array $cleansamples, array $opnames): array {
+    $nameslikelyhoods = array_combine($opnames, array_fill(0,16, array_fill(0,16,0) ));
+    foreach($cleansamples as [$op, $behaves]){
+        foreach($behaves as $opname) $nameslikelyhoods[ $opname ][ $op ]++;
     }
-    $c=0;$found=[]; while(true){
+    $found=[]; while(true){
         if(count($found)>=16)break;
         $mopname = ''; $mop = -1; $mopcount = -1;
         foreach($nameslikelyhoods as $opname=>$v){
@@ -58,7 +58,6 @@ function guessInstructionNamesBasedOnSamples(array $cleansamples): array {
             unset($nameslikelyhoods[ $mopname ]);
             foreach( $nameslikelyhoods as &$h) $h[ $mop ] = 0;
         }
-        $c++;
     }
     ksort($found);
     printf("        * Found ordered instruction map:\n");
@@ -66,7 +65,7 @@ function guessInstructionNamesBasedOnSamples(array $cleansamples): array {
     return $found;
 }
 function getInstructionSet(): array {
-    return $iset = [
+    return [
         "addr"=>function($reg,$ia,$ib){ return $reg[ $ia ] + $reg[ $ib ]; },
         "addi"=>function($reg,$ia,$ib){ return $reg[ $ia ] + $ib;         },
         "mulr"=>function($reg,$ia,$ib){ return $reg[ $ia ] * $reg[ $ib ]; },
@@ -84,18 +83,4 @@ function getInstructionSet(): array {
         "eqri"=>function($reg,$ia,$ib){ return ($reg[$ia] === $ib      ) ? 1 : 0; },
         "eqrr"=>function($reg,$ia,$ib){ return ($reg[$ia] === $reg[$ib]) ? 1 : 0; },
     ];
-}
-function sample2working(array $before, array $instruction, array $after): array {
-    $instructionSet = getInstructionSet();
-    $working=[];
-    foreach($instructionSet as $iname => $ifun){
-        $res = $before; $res[ $instruction[3] ]  = $ifun($before, $instruction[1], $instruction[2]);
-        if($res[0]===$after[0] &&
-           $res[1]===$after[1] &&
-           $res[2]===$after[2] &&
-           $res[3]===$after[3]){
-            $working[]=$iname;
-        }
-    }
-    return $working;
 }
