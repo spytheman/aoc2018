@@ -3,7 +3,7 @@
 echo "Part 1 answer: 115,138 \n";
 echo "Part 2 answer: 0,98 \n";
 echo "WIP ...\n";
-exit(0);
+//exit(0);
 include("common.php");
 $lines = read_input();
 $maxx = Amax(Amap($lines, function($l){ return strlen($l); })); $maxy = count($lines);
@@ -38,10 +38,10 @@ function move(array $tracks, array &$cars, int $maxx, int $maxy): array  {
     uasort($cars, function ($c1, $c2) { return (
                                                 $c1[1][1] <   $c2[1][1] || 
                                                 $c1[1][1] === $c2[1][1] && 
-                                                $c1[1][0] <   $c2[1][0]
+                                                $c1[1][0] <=  $c2[1][0]
                                                 ) ? -1 : 1; });    
     $crashes=[];
-    foreach($cars as $k=>&$c){
+    foreach($cars as $k=>$c){
         if (!isset($cars[$k])) continue;
         //printf("   moving car: %d\n",$k);
         [$cx, $cy] = $c[1]; [$vx, $vy] = $c2v[$c[0]]; [$nx, $ny] = [$cx+$vx, $cy+$vy]; 
@@ -57,24 +57,24 @@ function move(array $tracks, array &$cars, int $maxx, int $maxy): array  {
                 continue 2;
             }
         }
-        $c[1] = [$nx,$ny]; // update car position
+        $cars[$k][1] = [$nx,$ny]; // update car position
         $np = $tracks[$mny][$mnx];
         if('+' === $np){
             // on intersections
             switch($c[2] % 3){
-             case 0: $c[0] = $cturnsLeft[$c[0]]; break;
-             case 2: $c[0] =$cturnsRight[$c[0]]; break;
+             case 0: $cars[$k][0] = $cturnsLeft[$c[0]]; break;
+             case 2: $cars[$k][0] =$cturnsRight[$c[0]]; break;
             }
-            $c[2]++;
+            $cars[$k][2]++;
         }
         if('\\' === $np || '/' === $np ){
             // update car direction on corners
             $nc = "{$np}{$c[0]}";
-            $c[0] = $cturns[$nc];
+            $cars[$k][0] = $cturns[$nc];
         }
-        $g[$mny][$mnx]=$c[0];
+        $g[$mny][$mnx]=$cars[$k][0];
     }
-    //printf("Move: %6d | cars: %s\n", $move, join(' ', Amap($cars, function($c){ return sprintf("%-22s", ve($c)); })));
+    //printf("Move: %6d | cars: %s\n", $move, join(' ', Amap($cars, function($c){ return sprintf("%-22s", ve($cars[$k])); })));
     showCars("      Cars after move: {$move}", $cars);
     $move++;
     return $crashes;
