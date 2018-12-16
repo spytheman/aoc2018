@@ -25,13 +25,12 @@ function part_1(string $input_part1, array &$cleansamples): int {
 function part_2(string $input_part2, array $cleansamples): int {
     $instructionSet = getInstructionSet();
     $op2names = guessInstructionNamesBasedOnSamples( $cleansamples );
+    $i2fun = []; for($i=0;$i<16;$i++){ $i2fun[ $i ] = $instructionSet[ $op2names[ $i ] ]; }
     $program = explode("\n",$input_part2);
     $reg = [0,0,0,0];
     $c=0; foreach($program as $line){
         $instruction = line2digits( $line );
-        $fn = $instructionSet[ $op2names[ $instruction[0] ] ];
-        $nextreg = $fn( $reg, $instruction[1], $instruction[2], $instruction[3] );
-        $reg = $nextreg;
+        $reg[ $instruction[3] ] = $i2fun[ $instruction[0] ]( $reg, $instruction[1], $instruction[2]);
         $c++;
     }
     return $reg[0];
@@ -68,29 +67,29 @@ function guessInstructionNamesBasedOnSamples(array $cleansamples): array {
 }
 function getInstructionSet(): array {
     return $iset = [
-        "addr"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] + $reg[ $ib ]; return $reg; },
-        "addi"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] + $ib;         return $reg; },
-        "mulr"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] * $reg[ $ib ]; return $reg; },
-        "muli"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] * $ib;         return $reg; },
-        "banr"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] & $reg[ $ib ]; return $reg; },
-        "bani"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] & $ib;         return $reg; },
-        "borr"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] | $reg[ $ib ]; return $reg; },
-        "bori"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ] | $ib;         return $reg; },
-        "setr"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $reg[ $ia ]; return $reg; },
-        "seti"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = $ia;         return $reg; },
-        "gtir"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = ($ia        >  $reg[$ib]) ? 1 : 0; return $reg; },
-        "gtri"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = ($reg[$ia]  >  $ib      ) ? 1 : 0; return $reg; },
-        "gtrr"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = ($reg[$ia]  >  $reg[$ib]) ? 1 : 0; return $reg; },
-        "eqir"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = ($ia       === $reg[$ib]) ? 1 : 0; return $reg; },
-        "eqri"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = ($reg[$ia] === $ib      ) ? 1 : 0; return $reg; },
-        "eqrr"=>function($reg,$ia,$ib,$ic){ $reg[ $ic ] = ($reg[$ia] === $reg[$ib]) ? 1 : 0; return $reg; },
+        "addr"=>function($reg,$ia,$ib){ return $reg[ $ia ] + $reg[ $ib ]; },
+        "addi"=>function($reg,$ia,$ib){ return $reg[ $ia ] + $ib;         },
+        "mulr"=>function($reg,$ia,$ib){ return $reg[ $ia ] * $reg[ $ib ]; },
+        "muli"=>function($reg,$ia,$ib){ return $reg[ $ia ] * $ib;         },
+        "banr"=>function($reg,$ia,$ib){ return $reg[ $ia ] & $reg[ $ib ]; },
+        "bani"=>function($reg,$ia,$ib){ return $reg[ $ia ] & $ib;         },
+        "borr"=>function($reg,$ia,$ib){ return $reg[ $ia ] | $reg[ $ib ]; },
+        "bori"=>function($reg,$ia,$ib){ return $reg[ $ia ] | $ib;         },
+        "setr"=>function($reg,$ia,$ib){ return $reg[ $ia ]; },
+        "seti"=>function($reg,$ia,$ib){ return $ia;         },
+        "gtir"=>function($reg,$ia,$ib){ return ($ia        >  $reg[$ib]) ? 1 : 0; },
+        "gtri"=>function($reg,$ia,$ib){ return ($reg[$ia]  >  $ib      ) ? 1 : 0; },
+        "gtrr"=>function($reg,$ia,$ib){ return ($reg[$ia]  >  $reg[$ib]) ? 1 : 0; },
+        "eqir"=>function($reg,$ia,$ib){ return ($ia       === $reg[$ib]) ? 1 : 0; },
+        "eqri"=>function($reg,$ia,$ib){ return ($reg[$ia] === $ib      ) ? 1 : 0; },
+        "eqrr"=>function($reg,$ia,$ib){ return ($reg[$ia] === $reg[$ib]) ? 1 : 0; },
     ];
 }
 function sample2working(array $before, array $instruction, array $after): array {
     $instructionSet = getInstructionSet();
     $working=[];
     foreach($instructionSet as $iname => $ifun){
-        $res = $ifun($before, $instruction[1], $instruction[2], $instruction[3]);
+        $res = $before; $res[ $instruction[3] ]  = $ifun($before, $instruction[1], $instruction[2]);
         if($res[0]===$after[0] &&
            $res[1]===$after[1] &&
            $res[2]===$after[2] &&
