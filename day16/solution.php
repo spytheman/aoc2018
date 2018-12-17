@@ -11,9 +11,8 @@ function part_1(string $input_part1, array &$cleansamples): int {
     $instructionSet = getInstructionSet();
     $n=0;
     $samples = explode("Before: ", $input_part1);
-    $c=1; foreach($samples as $sample) {
+    foreach($samples as $sample) {
         if($sample==='')continue;
-        $sample = trim($sample);
         $b=[0,0,0,0]; $a=[0,0,0,0]; $behaving=[];
         sscanf($sample, "[%d, %d, %d, %d]\n%d %d %d %d\nAfter:  [%d, %d, %d, %d]", 
                $b[0], $b[1], $b[2], $b[3],  $iop, $ia, $ib, $ic,  $a[0], $a[1], $a[2], $a[3]);        
@@ -22,7 +21,6 @@ function part_1(string $input_part1, array &$cleansamples): int {
         }
         $cleansamples[]=[$iop, $behaving];
         if(count($behaving)>=3){ $n++; }
-        $c++;
     }
     return $n;
 }
@@ -32,10 +30,9 @@ function part_2(string $input_part2, array $cleansamples): int {
     $i2fun = []; for($i=0;$i<16;$i++){ $i2fun[ $i ] = $instructionSet[ $op2names[ $i ] ]; }
     $program = explode("\n",$input_part2);
     $reg = [0,0,0,0];
-    $c=0; foreach($program as $line){
+    foreach($program as $line){
         sscanf($line, "%d %d %d %d", $iop, $ia, $ib, $ic);
         $reg[ $ic ] = $i2fun[ $iop ]( $reg, $ia, $ib );
-        $c++;
     }
     return $reg[0];
 }
