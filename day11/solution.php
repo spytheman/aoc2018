@@ -3,7 +3,7 @@
 include("common.php");
 $serial = (int) join('', read_input());
 if($argc>2) $serial = (int) $argv[2];
-$grid = array_fill(0, 301, []); for($y=0;$y<301;$y++)$grid[$y]=array_fill(0,301,0);
+$grid = A2Dnew(300,300,0);
 for($y=1;$y<=300;$y++){
     for($x=1;$x<=300;$x++){
         $rid = $x + 10;
