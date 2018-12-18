@@ -60,6 +60,7 @@ function Arepeat(array $a, $f){
         $i++;
     }
 }
+function A2Dnew(int $maxx, int $maxy, $dflt=0): array {  return array_fill(0, $maxx, array_fill(0, $maxy, $dflt)); }
 function A1Deach(array $a, $f){ foreach($a as $x) if(false===$f($x,$y))return; }
 function A2Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) if(false===$f($x,$y))return; }
 function A3Deach(array $a, $f){ foreach($a as $x) foreach($a as $y) foreach($a as $z) if(false===$f($x,$y,$z))return; }
