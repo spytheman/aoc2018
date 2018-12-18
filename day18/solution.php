@@ -13,9 +13,23 @@ $c=0; foreach($lines as $line){
     //printf("%04d: %s\n", $c, $line);
     $c++;
 }
-for($m=0;$m<11;$m++){
+
+$maxm = 1000000000; $ghashes=[]; $totals=[]; $repetitionFound = false; $repetitionStart=0; $repetitionPeriod = $maxm;
+$m=0;while(($m<=$maxm)&&(!$repetitionFound)){
     $h=getNewH(); for($y=0;$y<$maxy;$y++) for($x=0;$x<$maxx;$x++) @$h[$g[$y][$x]]++;
-    printf("Minute: %4d | H of zone: %20s , Total: %8d\n", $m, ve($h), $h['|'] * $h['#']); 
+    $t = $h['|'] * $h['#'];
+    if($m===10)printf("Part 1 answer (after 10 iterations): %8d\n", $t);
+    $hg = md5(ve($g));
+    if(0 === $m % 100) printf("Minute:%-4d | ghash: %32s | H of zone: %-35s | T: %6d\n", $m, $hg, ve($h), $t);
+    if(isset($ghashes[$hg])){
+        printf("---> The same grid (hash:%32s) at M: %d has been already seen at M: %d\n", $hg, $m, $ghashes[$hg]);
+        $repetitionFound  = true;
+        $repetitionStart  = $ghashes[$hg];
+        $repetitionPeriod = $m - $ghashes[$hg];
+    }else{
+        $ghashes[ $hg ] = $m;
+    }
+    $totals[ $m ] = $t;
     //showGridZone($g,0,0, $maxx,$maxy,1);
     $ng = A2Dnew($maxx, $maxy, ' ');
     for($y=0;$y<$maxy;$y++){
@@ -30,5 +44,7 @@ for($m=0;$m<11;$m++){
             $ng[$y][$x]=$nc;
         }
     }
-    $g=$ng;
+    $g = $ng;
+    $m++;
 }
+printf("Part 2 answer (after 1000000000 iterations): %8d\n", $totals[ $repetitionStart + (($maxm-$repetitionStart) % $repetitionPeriod) ] );
