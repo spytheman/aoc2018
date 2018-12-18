@@ -10,7 +10,6 @@ function getNewH(){  return [' '=>0, '.'=>0, '|'=>0, '#'=>0]; }
 $g = A2Dnew($maxx, $maxy, ' ');
 $c=0; foreach($lines as $line){
     for($x=0;$x<$llen;$x++) $g[$sy+$c][$sx+$x] = $line[$x];
-    //printf("%04d: %s\n", $c, $line);
     $c++;
 }
 
