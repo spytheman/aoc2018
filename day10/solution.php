@@ -22,7 +22,7 @@ foreach(range(0,11000) as $step){
            "xmin: %d, ymin: %d, xmax: %d, ymax: %d, wh: %d\n", 
            $step, $w, $h, 
            $xmin, $ymin, $xmax, $ymax, $wh);
-    $grid = array_fill(0,$h+1,[]); for($y=0;$y<=$h;$y++) for($x=0;$x<=$w;$x++) @$grid[$y][$x] = SPACE_EMPTY;
+    $grid = A2Dnew($w, $h, SPACE_EMPTY); 
     foreach($xpoints as $k=>$x) $grid[ $ypoints[$k] - $ymin ] [ $x - $xmin ] = SPACE_FILLED;
 }
 foreach($grid as $gx) echo join('',$gx)."\n";
