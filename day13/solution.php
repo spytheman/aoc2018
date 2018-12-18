@@ -4,7 +4,7 @@ include("common.php");
 $lines = read_input();
 $maxx = Amax(Amap($lines, function($l){ return strlen($l); })); $maxy = count($lines);
 printf("Longest: x: %d y: %d\n",$maxx, $maxy);
-$tracks=array_fill(0,$maxy,[]);for($y=0;$y<$maxy;$y++)$tracks[$y]=array_fill(0,$maxx,' ');
+$tracks=A2Dnew($maxx, $maxy, ' ');
 $cars=[]; $n=0;
 for($y=0;$y<$maxy;$y++){
     $line = $lines[$y]; $nline = strlen($line);
