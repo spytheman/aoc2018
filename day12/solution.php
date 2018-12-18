@@ -21,7 +21,7 @@ foreach($lines as $line){
     $c++;
 }
 $nstate = count($state); 
-$g=array_fill(0,MAXY+1,array_fill(0,5*$nstate,0)); $glen = count($g[0]);
+$g=A2Dnew($glen=5*$nstate, MAXY, 0);
 $gcenter = $nstate;
 for($i=0;$i<$nstate;$i++)$g[0][$i+$gcenter] = $state[$i];
 printf("FSM   0:%3d, 1:%3d                : %32s\n", Acount($fsm,0), Acount($fsm,1), join('',$fsm));
