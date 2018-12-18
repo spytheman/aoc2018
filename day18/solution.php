@@ -2,43 +2,36 @@
 <?php 
 include("common.php");
 $lines = read_input();
-$llen = strlen($lines[0]);
-$border = 3;
-$maxx = 2*$border + $llen; $sx = $border; $ex = $maxx - $border;
-$maxy = 2*$border + $llen; $sy = $border; $ey = $maxy - $border;
-function getNewH(){  return [' '=>0, '.'=>0, '|'=>0, '#'=>0]; }
-$g = A2Dnew($maxx, $maxy, ' ');
-$c=0; foreach($lines as $line){
-    for($x=0;$x<$llen;$x++) $g[$sy+$c][$sx+$x] = $line[$x];
-    $c++;
-}
+$llen = strlen($lines[0]); $border = 1; $maxx = $maxy = 2*$border + $llen; $sx = $sy = $border;
+$g = A2Dnew($maxx, $maxy, ' '); for($y=0;$y<$llen;$y++) for($x=0;$x<$llen;$x++) $g[$sy+$y][$sx+$x] = $lines[$y][$x];
 
 $maxm = 1000000000; $ghashes=[]; $totals=[]; $repetitionFound = false; $repetitionStart=0; $repetitionPeriod = $maxm;
+function getNewH(){  return [' '=>0, '.'=>0, '|'=>0, '#'=>0]; }
 $m=0;while(($m<=$maxm)&&(!$repetitionFound)){
     $h=getNewH(); for($y=0;$y<$maxy;$y++) for($x=0;$x<$maxx;$x++) @$h[$g[$y][$x]]++;
     $t = $h['|'] * $h['#'];
     if($m===10)printf("Part 1 answer (after 10 iterations): %8d\n", $t);
-    $hg = md5(ve($g));
+    $hg = md5(serialize($g));
     if(0 === $m % 100) printf("Minute:%-4d | ghash: %32s | H of zone: %-35s | T: %6d\n", $m, $hg, ve($h), $t);
     if(isset($ghashes[$hg])){
+        $repetitionFound = true; $repetitionStart = $ghashes[$hg]; $repetitionPeriod = $m - $repetitionStart;
         printf("---> The same grid (hash:%32s) at M: %d has been already seen at M: %d\n", $hg, $m, $ghashes[$hg]);
-        $repetitionFound  = true;
-        $repetitionStart  = $ghashes[$hg];
-        $repetitionPeriod = $m - $ghashes[$hg];
     }else{
         $ghashes[ $hg ] = $m;
     }
     $totals[ $m ] = $t;
-    //showGridZone($g,0,0, $maxx,$maxy,1);
-    $ng = A2Dnew($maxx, $maxy, ' ');
+    $ng = $g;
     for($y=0;$y<$maxy;$y++){
         for($x=0;$x<$maxx;$x++){
+            $nearh=getNewH();
+            @$nearh[$g[$y-1][$x-1]]++; @$nearh[$g[$y-1][$x]]++;  @$nearh[$g[$y-1][$x+1]]++;
+            @$nearh[$g[$y  ][$x-1]]++;                           @$nearh[$g[$y  ][$x+1]]++;
+            @$nearh[$g[$y+1][$x-1]]++; @$nearh[$g[$y+1][$x]]++;  @$nearh[$g[$y+1][$x+1]]++;
             $c=$g[$y][$x]; $nc = $c;
-            $nearh=getNewH(); for($hy=-1;$hy<=1;$hy++) for($hx=-1;$hx<=1;$hx++) {if($hy===0 && $hx===0)continue; @$nearh[$g[$hy+$y][$hx+$x]]++;}
             switch($c){
-             case '.': $nc = ($nearh['|']>=3) ? '|' : '.'; break;
-             case '|': $nc = ($nearh['#']>=3) ? '#' : '|'; break;
-             case '#': $nc = ($nearh['#']>=1 && $nearh['|']>=1) ? '#' : '.'; break;
+             case '.': if( $nearh['|']>=3 ) $nc = '|'; break;
+             case '|': if( $nearh['#']>=3 ) $nc = '#'; break;
+             case '#': if( !($nearh['#']>=1 && $nearh['|']>=1) ) $nc='.'; break;
             }
             $ng[$y][$x]=$nc;
         }
