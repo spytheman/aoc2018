@@ -37,7 +37,7 @@ function part_2(string $input_part2, array $cleansamples): int {
     return $reg[0];
 }
 function guessInstructionNamesBasedOnSamples(array $cleansamples, array $opnames): array {
-    $nameslikelyhoods = array_combine($opnames, array_fill(0,16, array_fill(0,16,0) ));
+    $nameslikelyhoods = array_combine($opnames, A2Dnew(15,15));
     foreach($cleansamples as [$op, $behaves]){
         foreach($behaves as $opname) $nameslikelyhoods[ $opname ][ $op ]++;
     }
