@@ -27,13 +27,15 @@ $c=0; while(true){
         break;
     }
     $ins = $program[ $ip ];
-    printf("CPU at step: %-3d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
     $ncpustate = $instructions[ $ins[0] ]( $cpustate, $ins[1], $ins[2], $ins[3] );
     $cpustate = $ncpustate;
     $cpustate[ $ipidx  ]++;
-    if($c>100)break;
+    if(0 === $c % 100000){
+        printf("CPU at step: %-3d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
+    }
     $c++;
 }
+printf("CPU at step: %-3d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
 
 function state2string($state){
     $res = [];
