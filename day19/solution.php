@@ -3,6 +3,7 @@
 include("common.php");
 $lines = read_input();
 $program = []; $ipidx = 'dip'; $cpustate = [0,0,0, 0,0,0,  'dip'=>0, 'ipidx'=>0];
+if(isset($argv[2]))$cpustate[0]=(int)$argv[2];
 $c=0;
 foreach($lines as $line){
     //printf("%04d: %s\n", $c, $line);
@@ -48,7 +49,7 @@ $c=0; while(true){
     $cpustate[ $ipidx  ]++;
     $c++;
 }
-printf("CPU at step: %-3d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
+printf("CPU at step: %-3d %s \n", $c, state2string($cpustate));
 printf("Answer (reg 0 after termination): %s\n", $cpustate[0]);
 
 function state2string($state){
