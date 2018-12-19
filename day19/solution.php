@@ -1,12 +1,11 @@
 #!/usr/bin/env php
-<?php 
+<?php
 include("common.php");
 $lines = read_input();
 $program = []; $ipidx =0; $cpustate = [0,0,0, 0,0,0];
 if(isset($argv[2]))$cpustate[0]=(int)$argv[2];
 $c=0;
 foreach($lines as $line){
-    //printf("%04d: %s\n", $c, $line);
     [$cmd,$_rest] = explode(' ', $line);
     $args = array_pad( line2digits($line), 3, 0);
     if($cmd === '#ip'){
@@ -28,8 +27,7 @@ $c=0; while(true){
         break;
     }
     $ins = $program[ $ip ];
-    //if(0 === $c % 1000000)
-      printf("CPU at step: %-9d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
+    //if(0 === $c % 1000000) printf("CPU at step: %-9d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
     switch($ins[0]){
     case "addr":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] + $cpustate[ $ins[2] ];    break;
     case "addi":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] + $ins[2];                 break;
@@ -48,15 +46,24 @@ $c=0; while(true){
     case "eqri":$cpustate[$ins[3]] = ($cpustate[$ins[1]] === $ins[2]      ) ? 1 : 0; break;
     case "eqrr":$cpustate[$ins[3]] = ($cpustate[$ins[1]] === $cpustate[$ins[2]]) ? 1 : 0; break;
     }
+    if( $c > 30 ){
+        // Euristic speedup (determined by looking hard at goal and purpose of the input):
+        $n = Amax($cpustate);
+        printf("After 30 steps, the probable factorized number (biggest register) is: %d\n",$n);
+        $sqrN = (int) sqrt($n);
+        $result = 0; for ($i = 1; $i <= $sqrN; $i++) if ($n % $i === 0) $result += $i + $n / $i;
+        printf("Result of the program should be: %d\n", $result);
+        $cpustate[ 0 ] = $result ;
+        break;
+    }
     $cpustate[ $ipidx  ]++;
     $c++;
 }
 printf("CPU at step: %-3d %s \n", $c, state2string($cpustate));
-printf("Answer (reg 0 after termination): %s\n", $cpustate[0]);
+printf("Answer (content of register 0, after program termination): %s\n", $cpustate[0]);
 
 function state2string($state){
     $res = [];
     foreach( $state as $rname=>$rval) $res[]=sprintf("%8s",$rval);
     return '['.join(',', $res).']';
 }
-
