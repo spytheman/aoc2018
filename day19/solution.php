@@ -2,7 +2,7 @@
 <?php 
 include("common.php");
 $lines = read_input();
-$program = []; $ipidx = 'dip'; $cpustate = [1,0,0, 0,0,0,  'dip'=>0, 'ipidx'=>0];
+$program = []; $ipidx = 'dip'; $cpustate = [0,0,0, 0,0,0,  'dip'=>0, 'ipidx'=>0];
 $c=0;
 $instructions = getInstructionSet();
 foreach($lines as $line){
@@ -17,7 +17,7 @@ foreach($lines as $line){
     $c++;
 }
 $programsize = count($program)-1; 
-for($i=0;$i<=$programsize;$i++)printf("I: %-3d CMD: %s\n",$i, state2string($program[$i]));
+//for($i=0;$i<=$programsize;$i++)printf("I: %-3d CMD: %s\n",$i, state2string($program[$i]));
 
 $c=0; while(true){
     $ip  = $cpustate[ $ipidx ];
@@ -31,11 +31,12 @@ $c=0; while(true){
     $cpustate = $ncpustate;
     $cpustate[ $ipidx  ]++;
     if(0 === $c % 1000000){
-        printf("CPU at step: %-3d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
+        printf("CPU at step: %-9d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
     }
     $c++;
 }
 printf("CPU at step: %-3d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
+printf("Answer (reg 0 after termination): %s\n", $cpustate[0]);
 
 function state2string($state){
     $res = [];
