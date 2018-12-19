@@ -2,7 +2,7 @@
 <?php 
 include("common.php");
 $lines = read_input();
-$program = []; $ipidx = 'dip'; $cpustate = [0,0,0, 0,0,0,  'dip'=>0, 'ipidx'=>0];
+$program = []; $ipidx =0; $cpustate = [0,0,0, 0,0,0];
 if(isset($argv[2]))$cpustate[0]=(int)$argv[2];
 $c=0;
 foreach($lines as $line){
@@ -10,13 +10,14 @@ foreach($lines as $line){
     [$cmd,$_rest] = explode(' ', $line);
     $args = array_pad( line2digits($line), 3, 0);
     if($cmd === '#ip'){
-        $cpustate['ipidx'] = $ipidx = $args[0];
+        $ipidx = $args[0];
         continue;
     }
     $program[$c] = array_merge([$cmd], $args);
     $c++;
 }
-$programsize = count($program)-1; 
+$programsize = count($program)-1;
+printf("ipidx: %d\n",$ipidx);
 //for($i=0;$i<=$programsize;$i++)printf("I: %-3d CMD: %s\n",$i, state2string($program[$i]));
 
 $c=0; while(true){
@@ -27,7 +28,8 @@ $c=0; while(true){
         break;
     }
     $ins = $program[ $ip ];
-    if(0 === $c % 1000000){ printf("CPU at step: %-9d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins)); }
+    //if(0 === $c % 1000000)
+      printf("CPU at step: %-9d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
     switch($ins[0]){
     case "addr":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] + $cpustate[ $ins[2] ];    break;
     case "addi":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] + $ins[2];                 break;
@@ -54,7 +56,7 @@ printf("Answer (reg 0 after termination): %s\n", $cpustate[0]);
 
 function state2string($state){
     $res = [];
-    foreach( $state as $rname=>$rval) $res[]=sprintf("%1s: %-3s", $rname, $rval);
+    foreach( $state as $rname=>$rval) $res[]=sprintf("%8s",$rval);
     return '['.join(',', $res).']';
 }
 
