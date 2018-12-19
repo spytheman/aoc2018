@@ -2,7 +2,7 @@
 <?php 
 include("common.php");
 $lines = read_input();
-$program = []; $ipidx = 'dip'; $cpustate = [0,0,0, 0,0,0,  'dip'=>0, 'ipidx'=>0];
+$program = []; $ipidx = 'dip'; $cpustate = [1,0,0, 0,0,0,  'dip'=>0, 'ipidx'=>0];
 $c=0;
 $instructions = getInstructionSet();
 foreach($lines as $line){
