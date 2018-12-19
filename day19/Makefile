@@ -1,4 +1,4 @@
-CPPFLAGS=-std=c++14
+CPPFLAGS=-std=c++14 -O2
 
 day19: day19.cpp
 
