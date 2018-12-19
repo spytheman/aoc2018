@@ -4,7 +4,6 @@ include("common.php");
 $lines = read_input();
 $program = []; $ipidx = 'dip'; $cpustate = [0,0,0, 0,0,0,  'dip'=>0, 'ipidx'=>0];
 $c=0;
-$instructions = getInstructionSet();
 foreach($lines as $line){
     //printf("%04d: %s\n", $c, $line);
     [$cmd,$_rest] = explode(' ', $line);
@@ -27,12 +26,26 @@ $c=0; while(true){
         break;
     }
     $ins = $program[ $ip ];
-    $ncpustate = $instructions[ $ins[0] ]( $cpustate, $ins[1], $ins[2], $ins[3] );
-    $cpustate = $ncpustate;
-    $cpustate[ $ipidx  ]++;
-    if(0 === $c % 1000000){
-        printf("CPU at step: %-9d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
+    if(0 === $c % 1000000){ printf("CPU at step: %-9d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins)); }
+    switch($ins[0]){
+    case "addr":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] + $cpustate[ $ins[2] ];    break;
+    case "addi":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] + $ins[2];                 break;
+    case "mulr":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] * $cpustate[ $ins[2] ];    break;
+    case "muli":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] * $ins[2];                 break;
+    case "banr":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] & $cpustate[ $ins[2] ];    break;
+    case "bani":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] & $ins[2];                 break;
+    case "borr":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] | $cpustate[ $ins[2] ];    break;
+    case "bori":$cpustate[$ins[3]] = $cpustate[ $ins[1] ] | $ins[2];                 break;
+    case "setr":$cpustate[$ins[3]] = $cpustate[ $ins[1] ];                           break;
+    case "seti":$cpustate[$ins[3]] = $ins[1];                                        break;
+    case "gtir":$cpustate[$ins[3]] = ($ins[1]        >  $cpustate[$ins[2]]) ? 1 : 0; break;
+    case "gtri":$cpustate[$ins[3]] = ($cpustate[$ins[1]]  >  $ins[2]      ) ? 1 : 0; break;
+    case "gtrr":$cpustate[$ins[3]] = ($cpustate[$ins[1]]  >  $cpustate[$ins[2]]) ? 1 : 0; break;
+    case "eqir":$cpustate[$ins[3]] = ($ins[1]       === $cpustate[$ins[2]]) ? 1 : 0; break;
+    case "eqri":$cpustate[$ins[3]] = ($cpustate[$ins[1]] === $ins[2]      ) ? 1 : 0; break;
+    case "eqrr":$cpustate[$ins[3]] = ($cpustate[$ins[1]] === $cpustate[$ins[2]]) ? 1 : 0; break;
     }
+    $cpustate[ $ipidx  ]++;
     $c++;
 }
 printf("CPU at step: %-3d %s | IP: %-4d | INS: %15s\n", $c, state2string($cpustate), $ip, ve($ins));
@@ -44,24 +57,3 @@ function state2string($state){
     return '['.join(',', $res).']';
 }
 
-function getInstructionSet(): array {
-    return [        
-        "addr"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] + $reg[ $ib ];         return $o; },
-        "addi"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] + $ib;                 return $o; },
-        "mulr"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] * $reg[ $ib ];         return $o; },
-        "muli"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] * $ib;                 return $o; },
-        "banr"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] & $reg[ $ib ];         return $o; },
-        "bani"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] & $ib;                 return $o; },
-        "borr"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] | $reg[ $ib ];         return $o; },
-        "bori"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ] | $ib;                 return $o; },
-        "setr"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $reg[ $ia ];                       return $o; },
-        "seti"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = $ia;                               return $o; },
-        "gtir"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = ($ia        >  $reg[$ib]) ? 1 : 0; return $o; },
-        "gtri"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = ($reg[$ia]  >  $ib      ) ? 1 : 0; return $o; },
-        "gtrr"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = ($reg[$ia]  >  $reg[$ib]) ? 1 : 0; return $o; },
-        "eqir"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = ($ia       === $reg[$ib]) ? 1 : 0; return $o; },
-        "eqri"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = ($reg[$ia] === $ib      ) ? 1 : 0; return $o; },
-        "eqrr"=>function($reg,$ia,$ib,$ic){ $o=$reg; $o[$ic] = ($reg[$ia] === $reg[$ib]) ? 1 : 0; return $o; },
-        "#ip" =>function($reg,$ia,$ib,$ic){ $o=$reg; $o['#ip'] = $ia;                             return $o; },
-    ];
-}
