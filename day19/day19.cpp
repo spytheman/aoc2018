@@ -7,11 +7,11 @@ int main(int argc, char **argv)
      char line[1024];
      char inputfile[1024] = {"input"};
      int initial_reg0 = 0;
- 5     if( argc > 1 ) {
+     if( argc > 1 ) {
           for(int i=0;i<argc;i++) printf("Arg: %d = '%s'\n",i, argv[i]);
           strcpy(inputfile, argv[1]);
           if( argc > 2 ){
-  z             initial_reg0 = atoi( argv[2] );
+               initial_reg0 = atoi( argv[2] );
           }
      }
      printf("Input file: '%s' | initial register 0: %d .\n",inputfile, initial_reg0);
