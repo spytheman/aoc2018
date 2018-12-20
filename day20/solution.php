@@ -1,108 +1,43 @@
 #!/usr/bin/env php
-<?php 
+<?php
 include("common.php");
-$regexp = str_replace(['^', '$'], '', join('', read_input()));
-$hregexp = md5($regexp);
-$nregexp = strlen($regexp); 
-printf("Regexp length: %d hash: %32s\n", $nregexp, $hregexp);
-$lexems = regexp2lexems($regexp);
-$ptree = lexems2parsetree($lexems);
-printf("Ptree: %s\n", ve($ptree));
-printTree($ptree);
-function printTree(array $ptree, $level=0){
-    $levelpad = str_pad(' ', 4*$level, ' ');
-    foreach($ptree as $n){
-        if(is_array($n)){
-            printf("{$levelpad} [\n");
-            printTree($n, $level+1);
-            printf("{$levelpad} ]\n");
-        }else{
-            printf("{$levelpad} %s \n", $n);
-        }
+$regexp = substr(join('', read_input()), 1, -1);
+global $grid; $grid = [];
+walkOverGridAndDiscoverRoomDoors($regexp, 0, 0);
+
+$latestdistance = 0; $rooms = [ new Room(0,0,0) ];
+$visitedrooms = []; $maxrooms = [];
+while($room = array_shift($rooms)){
+    $latestdistance = $room->distance;
+    $roomc = $room->c(); $visitedrooms[$roomc] = 1; if($latestdistance>=1000) $maxrooms[$roomc] = 1;
+    $roomdoors = $grid[$room->y][$room->x] ?? [];
+    foreach($roomdoors as $d){
+        $x=$room->x; $y=$room->y;
+        switch($d){ case 'N':$y-=1;break; case 'E':$x+=1;break; case 'S':$y+=1;break; case 'W':$x-=1;break; }
+        if(!isset($visitedrooms[Room::sc($x,$y)])) $rooms[]=new Room($x,$y,$room->distance+1);
     }
 }
-/////////////////////////////////////////////////////////////////////////////////
-function regexp2lexems(string $regexp=''): array {
-    //printf("regexp2lexems regexp: %s\n", $regexp);
-    $res = [];
-    $nregexp=strlen($regexp);
-    $token = ''; $blevel = 0;
-    for($i=0;$i<$nregexp;$i++){
+printf("Part 1 answer is: %d\n", $latestdistance);
+printf("Part 2 answer is: %d\n", count($maxrooms));
+
+function walkOverGridAndDiscoverRoomDoors(string $regexp, int $startX, int $startY){
+    global $grid;
+    $x = $startX; $y = $startY; $n = strlen($regexp);
+    for($i=0;$i<$n;$i++){
         $c = $regexp[$i];
-        switch($c){
-         case 'N':;
-         case 'E':;
-         case 'S':;
-         case 'W':{
-             $token.=$c;
-             break;
-         }
-         case '(':{
-             if($token!=='')$res[]="_{$token}"; 
-             $res[]="{$c}{$blevel}";
-             $token='';
-             $blevel++;
-             break;
-         }
-         case '|':{
-             if($token!=='')$res[]="_{$token}"; 
-             $res[]=$c; 
-             $token=''; 
-             break;
-         }
-         case ')':{
-             $blevel--;
-             if($token!=='')$res[]="_{$token}"; 
-             $res[]="{$c}{$blevel}";
-             $token='';
-             break;             
-         }
+        if(in_array($c, ['N','E','S','W'])) $grid[$y][$x][] = $c;
+        if($c === '('){
+            $level = 0; for($j=$i;$j<$n;$j++){ if($regexp[$j]==='(')$level++; if($regexp[$j]===')')$level--; if($level === 0) break; }
+            if($j<$n) {  walkOverGridAndDiscoverRoomDoors(substr($regexp, $i+1, $j-$i-1), $x, $y); $i=$j; }
         }
+        if($c === '|'){ $x=$startX;$y=$startY; }
+        switch($c){ case 'N':$y-=1;break; case 'E':$x+=1;break; case 'S':$y+=1;break; case 'W':$x-=1;break; }
     }
-    if($token!=='')$res[]="_{$token}";
-    return $res;
 }
-function lexems2parsetree(array $lexems, $level=0): array {
-    $levelpad = str_pad(' ', $level*5, ' ');
-    //printf("{$levelpad} lexems2parsetree level: %2d, lexems: %s\n", $level, ve($lexems));
-    $res = [];
-    $nlexems = count($lexems);
-    for($i=0;$i<$nlexems;$i++){
-        $lexem = $lexems[$i];        
-        switch($lexem[0]){
-         case '_':{
-             $res[]=$lexem;
-             break;
-         }
-         case '|':{
-             if( $i+1 == $nlexems) {
-                 $res[]='e';
-             }
-             break;
-         }
-         case '(':{
-             $found = false; $needed=$lexem; $needed[0]=')'; $optionlexems=[];
-             for($j=$i+1;$j<$nlexems;$j++){
-                 $olexem = $lexems[$j];
-                 if( $lexems[$j] === $needed ){
-                     $found = true;
-                     break;
-                 }
-                 $optionlexems[]=$olexem;
-             }
-             if(!$found){
-                 printf("{$levelpad} Syntax error after '%s' . The bracket was not properly closed.\n", ve($res));
-                 exit(1);
-             }
-             $res[]=lexems2parsetree( $optionlexems, $level+1 );
-             $i=$j;
-             break;
-         }
-         case ')':{
-             printf("{$levelpad} found end of options\n");
-             break;
-         }
-        }
-    }
-    return $res;
+
+class Room {
+    static function sc($x,$y):string{ return "{$x}x{$y}"; }
+    var $x,$y,$distance;
+    function __construct(int $x=0, int $y=0, int $distance=0){ $this->x = $x; $this->y = $y; $this->distance = $distance; }
+    function c():string{ return Room::sc($this->x, $this->y); }
 }
