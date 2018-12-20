@@ -5,11 +5,11 @@ $regexp = substr(join('', read_input()), 1, -1);
 global $grid; $grid = [];
 walkOverGridAndDiscoverRoomDoors($regexp, 0, 0);
 
-$latestdistance = 0; $rooms = [ new Room(0,0,0) ];
-$visitedrooms = []; $maxrooms = [];
+$rooms = [ new Room(0,0,0) ];
+$visitedrooms = []; $maxrooms = []; $lastroom = null;
 while($room = array_shift($rooms)){
-    $latestdistance = $room->distance;
-    $roomc = $room->c(); $visitedrooms[$roomc] = 1; if($latestdistance>=1000) $maxrooms[$roomc] = 1;
+    $lastroom = $room;
+    $roomc = $room->c(); $visitedrooms[$roomc] = 1; if($room->distance >= 1000) $maxrooms[$roomc] = 1;
     $roomdoors = $grid[$room->y][$room->x] ?? [];
     foreach($roomdoors as $d){
         $x=$room->x; $y=$room->y;
@@ -17,7 +17,7 @@ while($room = array_shift($rooms)){
         if(!isset($visitedrooms[Room::sc($x,$y)])) $rooms[]=new Room($x,$y,$room->distance+1);
     }
 }
-printf("Part 1 answer is: %d\n", $latestdistance);
+printf("Part 1 answer is: %d\n", $lastroom->distance);
 printf("Part 2 answer is: %d\n", count($maxrooms));
 
 function walkOverGridAndDiscoverRoomDoors(string $regexp, int $startX, int $startY){
