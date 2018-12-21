@@ -58,7 +58,7 @@ enum InstructionCode {
 
 char _statebuf[100];
 char * state2string(const int *cpustate){
-     sprintf(_statebuf, "[%5d,%5d,%5d,%5d,%5d,%5d]", cpustate[0],cpustate[1],cpustate[2],cpustate[3],cpustate[4],cpustate[5]);
+     sprintf(_statebuf, "[%9d,%9d,%9d,%9d,%9d,%9d]", cpustate[0],cpustate[1],cpustate[2],cpustate[3],cpustate[4],cpustate[5]);
      return _statebuf;
 }
 
@@ -68,6 +68,7 @@ int main(int argc, char **argv)
      char inputfile[1024] = {"input"};
      int initial_reg0 = 0;
      int batchsize = 1000;
+     long maxsteps = 999999999999999L;
      Instruction instructions[1000];
      Instruction *ci;
      char cmd[32];
@@ -75,12 +76,9 @@ int main(int argc, char **argv)
      if( argc > 1 ) {
           for(int i=0;i<argc;i++) printf("Arg: %d = '%s'\n",i, argv[i]);
           strcpy(inputfile, argv[1]);
-          if( argc > 2 ){
-               initial_reg0 = atoi( argv[2] );
-          }
-          if( argc > 3 ){
-              batchsize = atoi( argv[3] );
-          }
+          if( argc > 2 ) initial_reg0 = atoi( argv[2] );
+          if( argc > 3 ) batchsize    = atoi( argv[3] );
+          if( argc > 4 ) maxsteps     = atoi( argv[4] );
      }
      printf("Input file: '%s' | initial register 0: %d .\n",inputfile, initial_reg0);
      ////////////////////////////////////////////////////////////////////////////////
@@ -108,10 +106,11 @@ int main(int argc, char **argv)
      printf("Start simulation...\n");
      int cpustate[6]={0,0,0,0,0,0};
      cpustate[0] = initial_reg0;
-     printf("START: ipidx: %2d | CPU state %s \n",  ipidx, state2string(cpustate));     
+     printf("Batchsize: %d | Maxsteps: %ld \n", batchsize, maxsteps);
+     printf("START: ipidx: %2d | CPU state %s \n",  ipidx, state2string(cpustate));
      long c=0; int ip=0; Instruction *ins;
      long time1 = getMicrosecond();
-     while(1){
+     while(c<maxsteps){
           //printf("Iteration c: %d\n",c);
           ip = cpustate[ ipidx ];
           if( ip > psize ){
