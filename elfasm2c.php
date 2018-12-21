@@ -16,7 +16,7 @@ foreach($lines as $line){
 }
 
 function commentSeparatorLine(){ printf("////////////////////////////////////////////////////////////////////////////\n"); }
-function stdoutMinusLine(){ return "std::cout << std::setfill ('-') << std::setw (105); std::cout << ' ' << std::endl;"; }
+function stdoutMinusLine(){ return 'printf("--------------------------------------------------------------------------------------------------------\n");'; }
 
 include(TEMPLATEFOLDER.'/header.php');
 
@@ -63,8 +63,8 @@ $programsize = count($program); for($i=0;$i<$programsize;$i++){
     printf("          case %4d: %-23s break; // %s %-9d %-9d %-9d\n", $i, $cop, $ins[0], $ins[1],$ins[2],$ins[3]);
 }
 printf("          default: { \n");
-printf("              ".stdoutMinusLine()."\n");
-echo  ('              printf("   Terminating ... Elf_emulate C: %12ld | IP: %3d \n", c, ip ); '."\n");
+echo  ('              '.stdoutMinusLine()."\n");
+echo  ('              printf("        Terminating ... Elf_emulate C: %12ld | IP: %3d \n", c, ip ); '."\n");
 printf("              *actualIterationCount += c;\n");
 printf("              return false;\n");
 printf("          }\n");
