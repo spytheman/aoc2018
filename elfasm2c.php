@@ -69,7 +69,7 @@ $programsize = count($program); for($i=0;$i<$programsize;$i++){
 }
 printf("          default: { \n");
 echo  ('              printf("Elf_emulate C: %12ld | IP: %3d | Terminating ...\n", c, ip ); '."\n");
-printf("              *actualIterationCount = c;\n");
+printf("              *actualIterationCount += c;\n");
 printf("              return false;\n");
 printf("          }\n");
 printf("    }\n");
@@ -77,7 +77,7 @@ printf("    r{$ipidx}++;\n");
 printf("    ip = r{$ipidx};\n");
 printf("    c++;\n");
 printf("  }\n");
-printf("  *actualIterationCount = c;\n");
+printf("  *actualIterationCount += c;\n");
 printf("  return true;\n");
 printf("}\n");
 exit(0);
