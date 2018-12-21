@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <set>
 // -*- mode: c++-mode -*-
 
 long getMicrosecond()
@@ -78,7 +79,7 @@ int main(int argc, char **argv)
           strcpy(inputfile, argv[1]);
           if( argc > 2 ) initial_reg0 = atoi( argv[2] );
           if( argc > 3 ) batchsize    = atoi( argv[3] );
-          if( argc > 4 ) maxsteps     = atoi( argv[4] );
+          if( argc > 4 ) maxsteps     = atol( argv[4] );
      }
      printf("Input file: '%s' | initial register 0: %d .\n",inputfile, initial_reg0);
      ////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +111,9 @@ int main(int argc, char **argv)
      printf("START: ipidx: %2d | CPU state %s \n",  ipidx, state2string(cpustate));
      long c=0; int ip=0; Instruction *ins;
      long time1 = getMicrosecond();
+     std::set<int> vals;
+     int comparisons=0;
+     int first_r3 = 0; int last_r3 = 0;
      while(c<maxsteps){
           //printf("Iteration c: %d\n",c);
           ip = cpustate[ ipidx ];
@@ -120,7 +124,7 @@ int main(int argc, char **argv)
           }
           if( 0 == c % batchsize ) {
                long time2 = getMicrosecond();
-               printf("CPU at step: %-6ld (elapsed %5ldms) |IP: %-4d |INS: %15s |REGS: %s\n",
+               printf("CPU at step: %-10ld (elapsed %5ldms) |IP: %-4d |INS: %15s |REGS: %s\n",
                       c, (time2-time1)/1000, ip, instruction2string( &instructions[ip] ), state2string(cpustate) );
                time1 = time2;
                fflush(stdout);
@@ -144,10 +148,29 @@ int main(int argc, char **argv)
           case EQRI: cpustate[ins->a3] = ( cpustate[ ins->a1 ] == ins->a2 )?1:0;   break;
           case EQRR: cpustate[ins->a3] = ( cpustate[ ins->a1 ] == cpustate[ins->a2]) ? 1: 0; break;
           }
+          if( ins->icode == EQRR ){
+              int ip = cpustate[ipidx];
+              int r3 = cpustate[3];
+              if( comparisons == 0 ) {
+                  printf("  >>>>>> First overflow candidate found: %d\n", r3);
+                  first_r3 = r3;
+              }
+              comparisons++;
+              if( vals.find(r3) != vals.end() ) break;
+              //printf("----- C: %10ld | IP: %3d | Comparisons: %10d | Register 3: %10d ------------\n", c, ip, comparisons, r3);
+              last_r3 = r3;
+              vals.insert(r3);
+          }
           cpustate[ ipidx ]++;
           c++;
      }
+     //for (auto v = vals.begin(); v != vals.end(); ++v){   printf("Reg 0 overflow value: %d\n", *v); }
+     printf("Total comparisons made: %d\n", comparisons);
+     printf("---------------------------------------------------------------\n");
+     printf("Part 1 answer (first comparison with r0, which could cause overflow) is: %d\n", first_r3);
+     printf("Part 2 answer (overflow value of r0, for which maximum instructions are executed) is: %d\n", last_r3);
      
      exit(0);
 }
+
 

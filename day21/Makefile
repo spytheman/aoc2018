@@ -1,5 +1,5 @@
-SOURCES:=$(shell find -name *.cpp)
-CPPFLAGS=-std=c++14 -g
+SOURCES=$(shell find . -name '*.cpp')
+CPPFLAGS=-std=c++14 -O2
 TARGETS=day21
 
 $(TARGETS): $(TARGETS).cpp
