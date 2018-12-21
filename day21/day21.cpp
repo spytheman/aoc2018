@@ -163,6 +163,8 @@ int main(int argc, char **argv)
               vals.insert(r3);
           }
           if( c > 1000000 && ip == 17 ) {
+              // NB: this optimization is very significant - it reduces the total
+              // runtime of the solution from ~45000ms to ~70ms ...
               cpustate[2] = cpustate[5] >> 8;
               // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ patches r2, so that artificial delay loop
               // below is skipped, and the freaking program finish much faster.
