@@ -38,7 +38,6 @@ printf("  return _regsbuffer; ");
 printf("}\n");
 printf("bool Elf_emulate(long maxCount, int *actualIterationCount)\n");
 printf("{\n");
-printf("  *actualIterationCount = 0;\n");
 printf("  long c=0;\n");
 printf("  int ip=0;\n");
 printf("  while(c<maxCount){ \n");
