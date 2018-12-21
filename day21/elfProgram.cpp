@@ -53,7 +53,7 @@ bool Elf_emulate(long maxCount, int *actualIterationCount)
           case   30:  r1 = 5;                break; // seti 5         3         1        
           default: { 
               printf("Elf_emulate C: %12ld | IP: %3d | Terminating ...\n", c, ip ); 
-              *actualIterationCount = c;
+              *actualIterationCount += c;
               return false;
           }
     }
@@ -61,6 +61,6 @@ bool Elf_emulate(long maxCount, int *actualIterationCount)
     ip = r1;
     c++;
   }
-  *actualIterationCount = c;
+  *actualIterationCount += c;
   return true;
 }
