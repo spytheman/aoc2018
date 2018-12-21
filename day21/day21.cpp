@@ -148,9 +148,10 @@ int main(int argc, char **argv)
           case EQRI: cpustate[ins->a3] = ( cpustate[ ins->a1 ] == ins->a2 )?1:0;   break;
           case EQRR: cpustate[ins->a3] = ( cpustate[ ins->a1 ] == cpustate[ins->a2]) ? 1: 0; break;
           }
+          
+          int ip = cpustate[ipidx];
+          int r3 = cpustate[3];
           if( ins->icode == EQRR ){
-              int ip = cpustate[ipidx];
-              int r3 = cpustate[3];
               if( comparisons == 0 ) {
                   printf("  >>>>>> First overflow candidate found: %d\n", r3);
                   first_r3 = r3;
@@ -160,6 +161,24 @@ int main(int argc, char **argv)
               //printf("----- C: %10ld | IP: %3d | Comparisons: %10d | Register 3: %10d ------------\n", c, ip, comparisons, r3);
               last_r3 = r3;
               vals.insert(r3);
+          }
+          if( c > 1000000 && ip == 17 ) {
+              cpustate[2] = cpustate[5] >> 8;
+              // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ patches r2, so that artificial delay loop
+              // below is skipped, and the freaking program finish much faster.
+              /////////////////////////////////////////////////////////////////////////
+              // The delay loop is formed by these instructions (specific to my input):
+              // 17: seti 0  9   2  => r2 = 0; 
+              // 18: addi 2  1   4  => r4 = r2 + 1;
+              // 19: muli 4  256 4  => r4 = r4 * 256;
+              // 20: gtrr 4  5   4  => r4 = (r4 > r5 ) ? 1 : 0;
+              // 21: addr 4  1   1  => ip = r4 + ip;
+              // 22: addi 1  1   1  => ip = ip + 1;
+              // 24: addi 2  1   2  => r2 = r2 + 1;
+              // 25: seti 17 8   1  => ip = 17; // jmp(17+1)=18, ie loop
+              // ... the equivalent of C is: for(r2=0;      r2*256<r5; r2++);
+              // ... and the patch makes it: for(r2=r5/256; r2*256<r5; r2++);
+              // ... thus terminating the loop immediately without other side effects.
           }
           cpustate[ ipidx ]++;
           c++;
