@@ -66,6 +66,7 @@ int main(int argc, char **argv)
      char line[1024];
      char inputfile[1024] = {"input"};
      int initial_reg0 = 0;
+     int batchsize = 65000000;
      Instruction instructions[1000];
      Instruction *ci;
      char cmd[32];
@@ -75,6 +76,9 @@ int main(int argc, char **argv)
           strcpy(inputfile, argv[1]);
           if( argc > 2 ){
                initial_reg0 = atoi( argv[2] );
+          }
+          if( argc > 3 ){
+               batchsize = atoi( argv[3] );
           }
      }
      printf("Input file: '%s' | initial register 0: %d .\n",inputfile, initial_reg0);
@@ -114,7 +118,7 @@ int main(int argc, char **argv)
                printf("-->CPU at step: %-12ld is %s | IP: %-4d > programsize: %d . Terminating...\n", c, state2string(cpustate), ip, psize);
                break;
           }
-          if( 0 == c % 100000000) {
+          if( 0 == c % batchsize ) {
                long time2 = getMicrosecond();
                printf("CPU at step: %-12ld (elapsed %5ldms) %s | IP: %-4d | INS: %15s\n",
                       c, (time2-time1)/1000, state2string(cpustate), ip, instruction2string( &instructions[ip] ) );
