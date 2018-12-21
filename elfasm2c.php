@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 include("common.php");
+define('TEMPLATEFOLDER', realpath(__DIR__).'/_elfasm2c_templates');
+
 $lines = read_input();
 $program = []; $ipidx =0; $cpustate = [0,0,0, 0,0,0];
 if(isset($argv[2]))$cpustate[0]=(int)$argv[2];
@@ -12,22 +14,16 @@ foreach($lines as $line){
     $program[$c] = array_merge([$cmd], $args);
     $c++;
 }
+
 function commentSeparatorLine(){ printf("////////////////////////////////////////////////////////////////////////////\n"); }
-printf("#include <stdio.h>\n");
-printf("\n");
-commentSeparatorLine();
-printf("/// This is a generated file. Edit it on your risk.\n");
-printf("/// This was produced by running: elfasm2c.php %s\n", get_input_filename());
-printf("/// This text should be put into a C++ file, for example elfProgram.cpp \n");
-printf("/// ... then it should be compiled with: \n");
-printf("///     g++ -std=c++14 -g  -c elfProgram.cpp  -o elfProgram.o \n");
-commentSeparatorLine();
-printf("\n");
-printf("/// ipidx: %d \n",$ipidx);
+function stdoutMinusLine(){ return "std::cout << std::setfill ('-') << std::setw (105); std::cout << ' ' << std::endl;"; }
+
+include(TEMPLATEFOLDER.'/header.php');
+
 $regs = []; $regnames = []; $regpercents = [];
 foreach($cpustate as $k=>$v) {
     $regnames[] = "r{$k}";
-    $regpercents[] = "%6d";
+    $regpercents[] = "%9d";
     $regs[] = sprintf("r{$k}={$v}"); 
 }
 printf("int %s;\n", join(',',$regs));
@@ -67,7 +63,8 @@ $programsize = count($program); for($i=0;$i<$programsize;$i++){
     printf("          case %4d: %-23s break; // %s %-9d %-9d %-9d\n", $i, $cop, $ins[0], $ins[1],$ins[2],$ins[3]);
 }
 printf("          default: { \n");
-echo  ('              printf("Elf_emulate C: %12ld | IP: %3d | Terminating ...\n", c, ip ); '."\n");
+printf("              ".stdoutMinusLine()."\n");
+echo  ('              printf("   Terminating ... Elf_emulate C: %12ld | IP: %3d \n", c, ip ); '."\n");
 printf("              *actualIterationCount += c;\n");
 printf("              return false;\n");
 printf("          }\n");
@@ -79,4 +76,7 @@ printf("  }\n");
 printf("  *actualIterationCount += c;\n");
 printf("  return true;\n");
 printf("}\n");
+
+include(TEMPLATEFOLDER.'/footer.php');
+
 exit(0);
