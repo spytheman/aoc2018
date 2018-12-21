@@ -36,7 +36,7 @@ printf("char * Elf_regs2string(){");
 echo  ('  sprintf(_regsbuffer, "R:['.join(',',$regpercents).']", '.join(',',$regnames).");");
 printf("  return _regsbuffer; ");
 printf("}\n");
-printf("bool Elf_emulate(long maxCount, int *actualIterationCount)\n");
+printf("bool Elf_emulate(long maxCount, long *actualIterationCount)\n");
 printf("{\n");
 printf("  long c=0;\n");
 printf("  int ip=0;\n");
