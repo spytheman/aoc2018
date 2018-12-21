@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>     // std::cout, std::endl
+#include <iomanip>      // std::setfill, std::setw
 
 #include <set>
 
@@ -20,7 +22,7 @@ int last_r3  = 0;
 int r0=0,r1=0,r2=0,r3=0,r4=0,r5=0;
     
 char _regsbuffer[255];
-char * Elf_regs2string(){  sprintf(_regsbuffer, "R:[%6d,%6d,%6d,%6d,%6d,%6d]", r0,r1,r2,r3,r4,r5);  return _regsbuffer; }
+char * Elf_regs2string(){  sprintf(_regsbuffer, "R:[%9d,%9d,%9d,%9d,%9d,%9d]", r0,r1,r2,r3,r4,r5);  return _regsbuffer; }
 bool Elf_emulate(long maxCount, long *actualIterationCount)
 {
   long c=0;
@@ -60,7 +62,8 @@ bool Elf_emulate(long maxCount, long *actualIterationCount)
           case   29:  r1 = r2 + r1;          break; // addr 2         1         1        
           case   30:  r1 = 5;                break; // seti 5         3         1        
           default: { 
-              printf("Elf_emulate C: %12ld | IP: %3d | Terminating ...\n", c, ip ); 
+              printf("--------------------------------------------------------------------------------------------------------\n");
+              printf("        Terminating ... Elf_emulate C: %12ld | IP: %3d \n", c, ip );
               *actualIterationCount += c;
               return false;
           }
@@ -68,20 +71,20 @@ bool Elf_emulate(long maxCount, long *actualIterationCount)
      
     if( ip == 28 ){
         if( comparisons == 0 ) {
-            printf("  >>>>>> First overflow candidate found: %d\n", r3);
+            printf("  >>>>>> First overflow candidate found: %d \n", r3);
             first_r3 = r3;
         }
         comparisons++;
         if( vals.find(r3) != vals.end() ) {
-           printf("Found a repeated overflow value: %d\n", r3 );
+           printf("  >>>>>> Found a repeated overflow value: %d ; last: %d\n", r3, last_r3 );
            *actualIterationCount += c;
            return false;
         }
         last_r3 = r3;
         vals.insert(r3);
     }
-
-    ip = r1;     
+     
+    ip = r1; 
     r1++;
     c++;
   }
@@ -91,23 +94,25 @@ bool Elf_emulate(long maxCount, long *actualIterationCount)
 }
 
 
-int main(int argc, char **argv){
-   int batchsize = 10000000;
+int main(int argc, char **argv)
+{
+   setbuf(stdout, NULL);
+   
+   int batchsize = 500000000; // ~1s realtime
    if( argc > 1 ) r0 = atoi(argv[1]);
    if( argc > 2 ) batchsize = atoi(argv[2]);
+   
+   printf("Batch size: %10d\n", batchsize);
+   printf("Initial registers: %21s %s\n", " ", Elf_regs2string());
+   printf("--------------------------------------------------------------------------------------------------------\n");
    long c=0; bool stillRuns=true;
    do{
-      printf("CPU at step: %12ld | BSize: %10d. elfVM regs: %s\n", c, batchsize, Elf_regs2string()); fflush(stdout);
+      printf("CPU at step: %12ld | elfVM regs : %s\n", c, Elf_regs2string());
       stillRuns = Elf_emulate(batchsize,&c);
       if( stillRuns )continue;
-      printf("CPU at step: %12ld | BSize: %10d. Final run of elfVM | regs: %s\n", c, batchsize, Elf_regs2string());
+      printf("CPU at step: %12ld | elfVM final: %s\n", c, Elf_regs2string());
    }while(stillRuns);
-   
-   printf("Total comparisons made: %d\n", comparisons);
-   printf("---------------------------------------------------------------\n");
-   printf("Part 1 answer (first comparison with r0, which could cause overflow) is: %d\n", first_r3);
-   printf("Part 2 answer (overflow value of r0, for which maximum instructions are executed) is: %d\n", last_r3);
-   
-   printf("Goodbye.\n");
+   printf("--------------------------------------------------------------------------------------------------------\n");
+   printf("Instructions: %ld\n", c);   
    exit(0);
 }
