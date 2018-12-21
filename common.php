@@ -138,8 +138,9 @@ function showGridZone($grid, $topx=0, $topy=0, $w=0, $h=0,$ordinarysize=2, $show
 
 function ve($x){ return json_encode($x); }
 function noSpace($line, $what=' '){ return str_replace($what, '', $line); }
-function read_input($filename=''){
+function get_input_filename($filename=''){
     if($filename==='')$filename=SDIR."/input";
     if($_SERVER['argc']>1) $filename=$_SERVER['argv'][1];
-    return file($filename, FILE_IGNORE_NEW_LINES);
+    return $filename;
 }
+function read_input($filename=''){  return file( get_input_filename($filename), FILE_IGNORE_NEW_LINES); }
