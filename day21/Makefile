@@ -9,3 +9,6 @@ clean:
 
 TAGS:
 	/opt/uctags/bin/ctags -e -o TAGS $(SOURCES)
+
+generateCPPFromInput: input 
+	../elfasm2c.php input > elfProgram.cpp
