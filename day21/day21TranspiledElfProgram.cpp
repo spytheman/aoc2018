@@ -1,6 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <set>
+
+std::set<int> vals;
+int comparisons = 0;
+int first_r3 = 0;
+int last_r3  = 0;
+
 ////////////////////////////////////////////////////////////////////////////
 /// This is a generated file. Edit it on your risk.
 /// This was produced by running: elfasm2c.php input
@@ -11,7 +18,7 @@
 
 /// ipidx: 1 
 int r0=0,r1=0,r2=0,r3=0,r4=0,r5=0;
-
+    
 char _regsbuffer[255];
 char * Elf_regs2string(){  sprintf(_regsbuffer, "R:[%6d,%6d,%6d,%6d,%6d,%6d]", r0,r1,r2,r3,r4,r5);  return _regsbuffer; }
 bool Elf_emulate(long maxCount, long *actualIterationCount)
@@ -58,10 +65,27 @@ bool Elf_emulate(long maxCount, long *actualIterationCount)
               return false;
           }
     }
+     
+    if( ip == 28 ){
+        if( comparisons == 0 ) {
+            printf("  >>>>>> First overflow candidate found: %d\n", r3);
+            first_r3 = r3;
+        }
+        comparisons++;
+        if( vals.find(r3) != vals.end() ) {
+           printf("Found a repeated overflow value: %d\n", r3 );
+           *actualIterationCount += c;
+           return false;
+        }
+        last_r3 = r3;
+        vals.insert(r3);
+    }
+
     ip = r1;     
     r1++;
     c++;
   }
+   
   *actualIterationCount += c;
   return true;
 }
@@ -78,6 +102,12 @@ int main(int argc, char **argv){
       if( stillRuns )continue;
       printf("CPU at step: %12ld | BSize: %10d. Final run of elfVM | regs: %s\n", c, batchsize, Elf_regs2string());
    }while(stillRuns);
+   
+   printf("Total comparisons made: %d\n", comparisons);
+   printf("---------------------------------------------------------------\n");
+   printf("Part 1 answer (first comparison with r0, which could cause overflow) is: %d\n", first_r3);
+   printf("Part 2 answer (overflow value of r0, for which maximum instructions are executed) is: %d\n", last_r3);
+   
    printf("Goodbye.\n");
    exit(0);
 }

@@ -1,12 +1,14 @@
 SOURCES=$(shell find . -name '*.cpp')
 CPPFLAGS=-std=c++14 -O2
-TARGETS=day21 runElfInput
+TARGETS=day21 runElfInput day21TranspiledElfProgram
 
 all: $(TARGETS)
 
 day21: day21.cpp
 
 runElfInput: runElfInput.cpp
+
+day21TranspiledElfProgram: day21TranspiledElfProgram.cpp
 
 ################################################################
 
