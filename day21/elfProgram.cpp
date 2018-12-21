@@ -12,9 +12,8 @@
 int r0=0,r1=0,r2=0,r3=0,r4=0,r5=0;
 char _regsbuffer[255];
 char * Elf_regs2string(){  sprintf(_regsbuffer, "R:[%6d,%6d,%6d,%6d,%6d,%6d]", r0,r1,r2,r3,r4,r5);  return _regsbuffer; }
-bool Elf_emulate(long maxCount, int *actualIterationCount)
+bool Elf_emulate(long maxCount, long *actualIterationCount)
 {
-  *actualIterationCount = 0;
   long c=0;
   int ip=0;
   while(c<maxCount){ 
