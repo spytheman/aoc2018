@@ -7,10 +7,11 @@ foreach($lines as $line){
     if(strpos($line, 'target:')===0) sscanf($line, 'target: %d, %d', $tx, $ty);
 }
 printf("Depth: %4d, Target: x:%4d y:%4d\n", $depth, $tx, $ty);
-$ag  = A2Dnew($tx,$ty); $agi = A2Dnew($tx,$ty); $age = A2Dnew($tx,$ty);
+[$mx, $my] = [$tx + 5, $ty + 5];
+$ag  = A2Dnew($mx,$my); $agi = A2Dnew($mx,$my); $age = A2Dnew($mx,$my);
 $sumrisk = 0;
-for($y=0;$y<=$ty;$y++){
-    for($x=0;$x<=$tx;$x++){
+for($y=0;$y<=$my;$y++){
+    for($x=0;$x<=$mx;$x++){
         if( ($tx === $x && $ty === $y) || (0 === $x && 0 === $y) ) $gi = 0;
         else if(0 === $y )$gi = $x * 16807;
         else if(0 === $x )$gi = $y * 48271;
@@ -19,9 +20,9 @@ for($y=0;$y<=$ty;$y++){
         $ag[$y][$x]  = $t = [0=>'.', 1=>'=', 2=>'|'][ $risk = $ge % 3 ];
         $agi[$y][$x] = $gi;
         $age[$y][$x] = $ge;
-        $sumrisk += $risk;
+        if($y <= $ty && $x <= $tx) $sumrisk += $risk;
     }
 }
 $ag[0][0]='M'; $ag[$ty][$tx]='T';
-showGridZone($ag, 0,0, $tx+1, $ty+1, 1);
+showGridZone($ag, 0,0, $mx+1, $my+1, 1);
 printf("Total risk for the area: %10d\n", $sumrisk);
