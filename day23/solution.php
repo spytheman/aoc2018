@@ -14,7 +14,7 @@ printRobots("Maximum", [$maxrobot]);
 
 $inrangerobots = Afilter($robots, function($x) use ( $maxrobot ):bool { return manhatanDistance($x, $maxrobot) <= $maxrobot[3]; });
 printRobots("Inrange",$inrangerobots);
-printf("Robots in range: %d\n", count($inrangerobots));
+printf("Part 1 answer(robots in range) is: %d\n", count($inrangerobots));
 
 function printRobots(string $name, array $robots){ Amap($robots, function($x) use ($name) { printf("%s robot: %s\n", $name, ve($x)); }); }
 function manhatanDistance(array $a, array $b): int { return abs($a[0]-$b[0]) + abs($a[1]-$b[1]) + abs($a[2]-$b[2]) ; }
