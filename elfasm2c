@@ -17,25 +17,28 @@ $showheader = $showfooter = true;
 $codegenkind = CODEGEN_SWITCH;
 for($i=1;$i<$argc;$i++) {
     if($argv[$i]==='--help'){
-        echo "elfasm2c - Transpiles elfic assembly to equivalent C source code. \n";
-        echo "           The generated C program can be compiled using g++/clang++ for example.\n";
-        echo "           The goal is to run the native binary *several orders of magnitude* faster.\n";
-        echo "Usage: \n";
-        echo "   elfasm2c input.elf [OPTION] > input.c \n";
-        echo "        ... where OPTION can be: \n";
+        echo "Usage:  elfasm2c input.elf [OPTIONS] > input.c \n";
+        echo "Transpiles elfic assembly to equivalent C source code. \n";
+        echo "The generated C program can be compiled using g++/clang++ for example.\n";
+        echo "The goal is to run the native binary *several orders of magnitude* faster.\n";
+        echo "Options can be: \n";
         echo "        --help          -  Shows this help .\n";
         echo "        --hideheader    -  no header boilerplate in output. \n";
         echo "        --hidefooter    -  no footer boilerplate in output. \n";
         echo "        --reg Ridx=Rval -  Set initial register Ridx to value Rval. \n";
-        echo "                 Can be given multiple times. Example: --reg 0=1231  --reg 5=771 \n";
+        echo "                 Can be given multiple times. \n";
+        echo "                 Example: --reg 0=1231  --reg 5=771 \n";
         echo "                 ... sets both reg0=1231 and reg5=771 . \n";
         echo "\n";
         echo "        --codegenswitch -  Use the CODEGEN_SWITCH kind of generation . \n";
         echo "                           This is the default mode. Moderately fast. \n";
         echo "\n";
-        echo "        --codegendirect -  Use the CODEGEN_DIRECT kind of generation (with gotos and stuff). \n";
-        echo "                           Experimental and more complex, but the generated code should be \n";
-        echo "                           Super Duper Insanely Fast (tm). \n";
+        echo "        --codegendirect -  Use the CODEGEN_DIRECT kind of generation . \n";
+        echo "                           (it uses direct translations when possible, \n";
+        echo "                            and gotos for the jumps). \n";
+        echo "                           Experimental and more complex. \n";
+        echo "                           The generated code should be however \n";
+        echo "                           Super Duper Insanely Fast (tm) :-) \n";
         echo "\n";
         exit(0);
     }

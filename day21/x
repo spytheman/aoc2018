@@ -1,0 +1,23 @@
+Usage:  elfasm2c input.elf [OPTIONS] > input.c 
+Transpiles elfic assembly to equivalent C source code. 
+The generated C program can be compiled using g++/clang++ for example.
+The goal is to run the native binary *several orders of magnitude* faster.
+Options can be: 
+        --help          -  Shows this help .
+        --hideheader    -  no header boilerplate in output. 
+        --hidefooter    -  no footer boilerplate in output. 
+        --reg Ridx=Rval -  Set initial register Ridx to value Rval. 
+                 Can be given multiple times. 
+                 Example: --reg 0=1231  --reg 5=771 
+                 ... sets both reg0=1231 and reg5=771 . 
+
+        --codegenswitch -  Use the CODEGEN_SWITCH kind of generation . 
+                           This is the default mode. Moderately fast. 
+
+        --codegendirect -  Use the CODEGEN_DIRECT kind of generation . 
+                           (it uses direct translations when possible, 
+                            and gotos for the jumps). 
+                           Experimental and more complex. 
+                           The generated code should be however 
+                           Super Duper Insanely Fast (tm) :-) 
+
