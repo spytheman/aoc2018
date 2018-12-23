@@ -6,7 +6,7 @@ $robots = Amap(read_input(), function($line){ return line2digits($line); });
 printRobots("Ordinary", $robots);
 
 $sortedrobots = $robots;
-usort($sortedrobots, function($a, $b){ return $a[3]<=>$a[3]; });
+usort($sortedrobots, function($a, $b){ return $b[3]<=>$a[3]; });
 
 $otherrobots = $sortedrobots;
 $maxrobot = array_shift($otherrobots);
