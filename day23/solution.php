@@ -2,8 +2,5 @@
 <?php 
 include("common.php");
 $lines = read_input();
-$c=0;
-foreach($lines as $line){
-    printf("%04d: %s\n", $c, $line);
-    $c++;
-}
+$digits = Amap($lines, function($line){ return line2digits($line); });
+var_dump($digits);
