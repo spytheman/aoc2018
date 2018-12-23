@@ -17,7 +17,11 @@ $showheader = $showfooter = true;
 $codegenkind = CODEGEN_SWITCH;
 for($i=1;$i<$argc;$i++) {
     if($argv[$i]==='--help'){
-        echo "Usage: elfasm2c.php input.elf [OPTION] > input.c \n";
+        echo "elfasm2c - Transpiles elfic assembly to equivalent C source code. \n";
+        echo "           The generated C program can be compiled using g++/clang++ for example.\n";
+        echo "           The goal is to run the native binary *several orders of magnitude* faster.\n";
+        echo "Usage: \n";
+        echo "   elfasm2c input.elf [OPTION] > input.c \n";
         echo "        ... where OPTION can be: \n";
         echo "        --help          -  Shows this help .\n";
         echo "        --hideheader    -  no header boilerplate in output. \n";
