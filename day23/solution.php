@@ -41,8 +41,10 @@ $clines[] = "
 (maximize (inrange x y z))
 (minimize (dist 0 0 0 x y z))
 (check-sat)
-(get-objectives)
 (get-model)
+(echo \"\")
+(echo \"Part 2 answer is below:\")
+(eval (dist x y z 0 0 0))                    
 ";
 
 $z3filename = get_input_filename().'.z3';
