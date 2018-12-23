@@ -7,15 +7,13 @@ printRobots("Ordinary", $robots);
 
 $sortedrobots = $robots;
 usort($sortedrobots, function($a, $b){ return $a[3]<=>$a[3]; });
-printRobots("Sorted", $sortedrobots);
 
 $otherrobots = $sortedrobots;
 $maxrobot = array_shift($otherrobots);
 printRobots("Maximum", [$maxrobot]);
-printRobots("Other", $otherrobots);
 
 $inrangerobots = Afilter($robots, function($x) use ( $maxrobot ):bool { return manhatanDistance($x, $maxrobot) <= $maxrobot[3]; });
-printRobots("Inrange robot",$inrangerobots);
+printRobots("Inrange",$inrangerobots);
 printf("Robots in range: %d\n", count($inrangerobots));
 
 function printRobots(string $name, array $robots){ Amap($robots, function($x) use ($name) { printf("%s robot: %s\n", $name, ve($x)); }); }
