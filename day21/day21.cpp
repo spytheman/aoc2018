@@ -72,8 +72,6 @@ int main(int argc, char **argv)
      long maxsteps = 999999999999999L;
      Instruction instructions[1000];
      Instruction *ci;
-     char cmd[32];
-     int a1, a2, a3;
      if( argc > 1 ) {
           for(int i=0;i<argc;i++) printf("Arg: %d = '%s'\n",i, argv[i]);
           strcpy(inputfile, argv[1]);

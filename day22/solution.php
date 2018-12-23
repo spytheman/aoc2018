@@ -37,8 +37,9 @@ $movecosts = ['U'=>1,'D'=>1,'L'=>1,'R'=>'1',   'T'=>7, 'C'=>7, ' '=>7];
 $maxmoves = PHP_INT_MAX; $maxminutes = PHP_INT_MAX;
 $mg  = A2Dnew($mx,$my,SPACE_EMPTY);
 $distances = A2Dnew($mx,$my,0); for($y=0;$y<=$my;$y++) for($x=0;$x<=$mx;$x++) $distances[$y][$x] = (int) (abs($y-$ty) + abs($x-$tx));
+//$walked = A2Dnew($mx,$my,[]);
 $foundroutes = [];
-$minutes = findRoutes($mg, ['ct' => 'T', 'cx'=>0, 'cy'=>0], ['']);
+$minutes = findRoutes($mg, ['cx'=>0,'cy'=>0,'ct'=>'T']);
 usort($foundroutes, function($a,$b){ return $b[0]<=>$a[0]; });
 foreach($foundroutes as [$cminutes, $route]) printf("Found route lasting %5d minutes: %s\n", $cminutes, joint('',$route));
 printf("Minimum minutes: %d\n", $minutes);
@@ -48,40 +49,44 @@ function findRoutes($mg, $cstate, $previousmoves=[], $isPrevAChange=false, $cmin
     static $calls=0; $calls++; 
     global $ag, $distances, $tx, $ty, $mx, $my, $movecosts, $maxmoves, $maxminutes, $foundroutes;
     assert( $cminutes >= 0 , 'findRoutes called with negative cminutes!');
-    if( $nmoves   > $maxmoves   ) { return -1; }
-    if( $cminutes > $maxminutes ) { return -1; }
-    
+    if( $nmoves   > $maxmoves   ) { echo "Cut: nmoves   > maxmoves\n"; return -1; }
+    if( $cminutes > $maxminutes ) { echo "Cut: cminutes > maxminutes\n"; return -1; }
+        
     $spad = str_pad(' ', $nmoves, '>');
     $cx = (int) $cstate['cx']; $cy = (int) $cstate['cy']; $ct = $cstate['ct'];
-    if( $cx<0   ){ return -1; }
-    if( $cx>$my ){ return -1; }
-    if( $cy<0   ){ return -1; }
-    if( $cy>$my ){ return -1; }
+    if( $cx<0   ){ echo "Cut: cx<0  \n"; return -1; }
+    if( $cy<0   ){ echo "Cut: cy<0  \n"; return -1; }
+    if( $cx>$mx ){ echo "Cut: cx>mx \n"; return -1; }
+    if( $cy>$my ){ echo "Cut: cy>my \n"; return -1; }
+    
+    //if( isset( $walked[$cy][$cx][$ct] ) ) { echo "\n"; return -1; }
+    //$walked[$cy][$cx][$ct] = 1;
+    
     $ck = $ag[$cy][$cx];
     $cd = $distances[$cy][$cx];
-
-    if(0 === $calls % 100000){
-        printf("calls %9d - findRoutes target:{%2dx%2d} | maxminutes: %4d | cminutes:%4d | cd:%3d | maxmoves:%4d | nmoves:%4d | cstate: {cx:%3d,cy:%3d,ct:%3d} | pmove:'%1s'\n",
+    
+    if(0 === $calls % 1){
+        printf("calls %9d - findRoutes target:{%2dx%2d} | maxminutes: %4d | cminutes:%4d | cd:%3d | maxmoves:%4d | nmoves:%4d | cstate: {cx:%3d,cy:%3d,ct:%1s} | pmove:'%1s'\n",
                $calls,
                $tx, $ty,
                $maxminutes, $cminutes, $cd,
                $maxmoves, $nmoves, 
-               $cstate['cx'], $cstate['cy'], $cstate['ct'], 
+               $cx, $cy, $ct, 
                join('',$previousmoves)
                );
     }
 
     $mgc = $mg[$cy][$cx];
-    if(in_array($mgc, ['U','D','L','R']))return -1;
-    if((int) $mgc > 1) return -1;
+    if(in_array($mgc, ['U','D','L','R'])) { echo "Cut: mgc in UDLR \n"; return -1; }
+    if((int) $mgc > 1) { echo "Cut: mgc > 1 \n"; return -1; }
     
     $cmoves = $movecosts;
     unset($cmoves[ $ct ]); // no point to change to the already selected tool    
     
     //$failreason = sprintf("{$spad} -1 since ck='%1s' and ct='%1s'\n", $ck, $ct);
-    if('.' === $ck && $ct === ' '){ return -1;}
-    if('=' === $ck && $ct === 'T'){ return -1;}
-    if('|' === $ck && $ct === 'C'){ return -1;}    
+    if('.' === $ck && $ct === ' '){ echo "Cut: ck='.' && ct=' '\n"; return -1;}
+    if('=' === $ck && $ct === 'T'){ echo "Cut: ck='=' && ct='T'\n"; return -1;}
+    if('|' === $ck && $ct === 'C'){ echo "Cut: ck='|' && ct='C'\n"; return -1;}    
     if('.' === $ck)unset($cmoves[' ']);
     if('=' === $ck)unset($cmoves['T']);
     if('|' === $ck)unset($cmoves['C']);
@@ -116,24 +121,25 @@ function findRoutes($mg, $cstate, $previousmoves=[], $isPrevAChange=false, $cmin
     //Try all the remaining moves:
     $nstates = [];
     foreach($cmoves as $move=>$mcost){
-        $nstate = ['cx'=>(int)$cx, 'cy'=>(int)$cy, 'ct'=> $ct];
+        $ny = 0; $nx = 0; $nt ='';
+        [$ny, $nx, $nt] = [$cy, $cx, $ct];
         switch($move){
-         case 'U':$nstate['cy']--;  break; case 'D':$nstate['cy']++;  break;
-         case 'L':$nstate['cx']--;  break; case 'R':$nstate['cx']++;  break;
-         case 'T':; case 'C':; case ' ': { $nstate['ct']=$move; break; }
+         case 'U':$ny--;  break; case 'D':$ny++;  break;
+         case 'L':$nx--;  break; case 'R':$nx++;  break;
+         case 'T':; case 'C':; case ' ': { $nt=$move; break; }
         }
-        $ndistance = $distances[$nstate['cy']][$nstate['cx']];
-        $nstates[] = [$ndistance, $mcost, $move, $nstate];
+        //if( isset($walked[$ny][$nx][$nt]) ) continue;
+        $nxtst = ['cx'=>(int)$nx,'cy'=>(int)$ny,'ct'=>$ct];
+        $nstates[] = [ 0=>(int) $distances[$ny][$nx], 1=>(int) $mcost, 2=>$move, 3=>$nxtst ];
     }
     usort( $nstates, function($a, $b){  return 10*($a[0] <=> $b[0])  +  ($a[1] <=> $a[1]); });
-    //printf("{$spad} cstate: {cx:%2d, cy:%2d, ct: '%1s', ck:'%1s'} | nstates: \n", $cx, $cy, $ct, $ck);
-    //foreach($nstates as $n) printf("{$spad}         nstate: %s\n", ve($n));
+    printf("{$spad} cstate: {cx:%2d, cy:%2d, ct: '%1s', ck:'%1s'} | nstates: \n", $cx, $cy, $ct, $ck);
+    foreach($nstates as $n) printf("{$spad}         nstate: %s\n", ve($n));
     
     $routes=[];
     foreach($nstates as [$ndistance, $mcost, $move, $znstate ]){
-        $nmg = $mg; 
-        $znx = $znstate['cx']; $zny = $znstate['cy'];
-        $achanges = false;
+        $ndistance = (int) $ndistance; $mcost = (int) $mcost;
+        $nmg = $mg; $achanges = false;
         switch($move){
          case 'U':; case 'D':; case 'L':;  case 'R': {
              $achanges = false;
@@ -142,21 +148,22 @@ function findRoutes($mg, $cstate, $previousmoves=[], $isPrevAChange=false, $cmin
          }
          case 'T':; case 'C':; case ' ':;  {
              $achanges = true;
-             $nmg[$cy][$cx] = ( $nmg[$cy][$cx] === SPACE_EMPTY )  ?  0 :  $nmg[$cy][$cx] + 1;
+             if(  $nmg[$cy][$cx] === SPACE_EMPTY )  $nmg[$cy][$cx] = 0;
+             $nmg[$cy][$cx]++;
              break;
          }
         }
-        $nminutes = $cminutes + $mcost;
+        $nminutes = (int) $cminutes + (int) $mcost;
         if($nminutes >= $maxminutes)continue;
         if($nminutes + $ndistance >= $maxminutes)continue;
         
         $pmoves = $previousmoves; $pmoves[] = $move;
         $neededminutes = findRoutes($nmg, $znstate, $pmoves, $achanges, $cminutes + $mcost, $nmoves+1 );
-        
+        printf("{$spad} Needed minutes for move: %s: %d\n", $move, $neededminutes);
         if($neededminutes === -1) continue;
         $routes[ $move ] = $neededminutes;
     }    
-    if(!count($routes)) return -1;
+    if(!count($routes)) { echo "Cut: no routes.\n"; return -1; }
     
     printf("{$spad} Routes : %s\n", ve($routes));    
     return Amin($routes);
