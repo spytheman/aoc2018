@@ -2,12 +2,10 @@
 <?php
 include("common.php");
 $lines = read_input();
-$allgroups = ['imune'=>[], 'infection'=>[]];
-$cindex = '';
-$c=0;
+$allgroups = ['body'=>[], 'infection'=>[]]; $c=0; $cindex = '';
 foreach($lines as $line){ $c++;
-    if(strlen($line)===0)continue;
-    if( ':' === $line[-1] ){ $cindex = ['Immune System:'=>'imune', 'Infection:'=>'infection'][ $line ] ?? ''; continue; }
+    if(''===$line)continue;
+    if(':' === $line[-1]){ $cindex = ['Immune System:'=>'body', 'Infection:'=>'infection'][ $line ] ?? ''; continue; }
     $allgroups[$cindex][$c] = new Group($c,$cindex,$line);
 }
 Group::show($allgroups);
@@ -24,15 +22,13 @@ class Group {
     var $initiative=0;
     function __construct(int $id, string $kind, string $line){  $this->id = $id;  $this->kind = $kind;  $this->extractInfoFromLine($line);  }
     function __toString(): string {
-        return sprintf("Group{ id: %2d, kind: %-9s, units: %4d, hp: %5d, adamage: %3d, atype: %11s, initiative: %2d, weakto: [%-24s], strongto: [%-24s]}",
+        return sprintf("Group{ id: %2d, kind: %-9s, units: %4d, hp: %5d, adamage: %4d, atype: %11s, initiative: %2d, weakto: [%-24s], strongto: [%-24s]}",
                        $this->id, $this->kind, $this->units, $this->hp, $this->adamage, $this->atype, $this->initiative, join(', ', $this->weakto), join(', ', $this->strongto));
     }
     static function show(array $allgroups){ 
         foreach($allgroups as $gkind=>$groups){  printf("%s groups:\n", $gkind);  foreach($groups as $g) printf("%s\n", $g);  }
-        printf("\n");
     }
     function extractInfoFromLine(string $line){
-        //printf("group id: %5d : kind: %10s | line: %s\n", $this->id, $this->kind, $line);
         sscanf($line, "%d units each with %d hit points", $this->units, $this->hp);
         if(strpos($line, '(')>0){
             $_skip = strtok($line, '()');  $options = strtok('()');   $_skip = strtok('()');
@@ -42,8 +38,7 @@ class Group {
                 if(strpos($a, $x='immune to')===0) $this->strongto = explode(',',str_replace(' ','',str_replace($x,'',$a)));
             }
         }
-        if(preg_match_all("/with an attack that does (\d+) (.+) damage at initiative (\d+)$/", $line, $b)){
+        if(preg_match_all("/with an attack that does (\d+) (.+) damage at initiative (\d+)$/", $line, $b))
             [ $this->adamage, $this->atype, $this->initiative ] = [ (int) $b[1][0], $b[2][0], (int) $b[3][0] ];
-        }
     }
 }
