@@ -39,14 +39,16 @@ class Group {
         $this->kind = $kind;
     }
     function __toString(): string {
-        return sprintf("Group{ id: %2d, kind: %-10s, units: %4d, hp: %5d, adamage: %2d, atype: %10s, initiative: %2d, weakto: [%-24s], strongto: [%-24s]}",
+        return sprintf("Group{ id: %2d, kind: %-9s, units: %4d, hp: %5d, adamage: %3d, atype: %11s, initiative: %2d, weakto: [%-24s], strongto: [%-24s]}",
                        $this->id,
                        $this->kind,
                        $this->units,
                        $this->hp,
+                       
                        $this->adamage,
                        $this->atype,
                        $this->initiative,
+                       
                        join(', ', $this->weakto),
                        join(', ', $this->strongto)
         );
@@ -70,9 +72,10 @@ class Group {
     function extractUnitsAndHP(string $line){
         sscanf($line, "%d units each with %d hit points", $this->units, $this->hp);
     }
-    function extractAttackAndInitiative(string $line){
-        sscanf($line, "with an attack that does %d %s damage at initiative %d", $this->adamage, $this->atype, $this->initiative);
-        var_dump($line, $this->adamage, $this->atype, $this->initiative);
+    function extractAttackAndInitiative(string $line){         
+        if(preg_match_all("/with an attack that does (\d+) (.+) damage at initiative (\d+)$/", $line, $b)){
+            [ $this->adamage, $this->atype, $this->initiative ] = [ (int) $b[1][0], $b[2][0], (int) $b[3][0] ];
+        }
     }
     function extractInfoFromLine(string $line){
         printf("group id: %5d : kind: %10s | line: %s\n", $this->id, $this->kind, $line);
