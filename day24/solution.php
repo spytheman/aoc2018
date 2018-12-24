@@ -18,11 +18,8 @@ foreach($lines as $line){
     $side[$g->id]=$g;
     $c++;
 }
-foreach($allgroups as $gkind=>$groups){
-    printf("%s groups:\n", $gkind);
-    foreach($groups as $g) printf("%s\n", $g);
-    printf("\n");
-}
+Group::show($allgroups);
+
 
 class Group {
     var $id=0;
@@ -40,18 +37,20 @@ class Group {
     }
     function __toString(): string {
         return sprintf("Group{ id: %2d, kind: %-9s, units: %4d, hp: %5d, adamage: %3d, atype: %11s, initiative: %2d, weakto: [%-24s], strongto: [%-24s]}",
-                       $this->id,
-                       $this->kind,
-                       $this->units,
-                       $this->hp,
-                       
-                       $this->adamage,
-                       $this->atype,
-                       $this->initiative,
-                       
-                       join(', ', $this->weakto),
-                       join(', ', $this->strongto)
+                       $this->id, $this->kind,
+                       $this->units, $this->hp,                       
+                       $this->adamage, $this->atype, $this->initiative,                       
+                       join(', ', $this->weakto), join(', ', $this->strongto)
         );
+    }
+    static function show(array $allgroups){
+        foreach($allgroups as $gkind=>$groups){
+            printf("%s groups:\n", $gkind);
+            foreach($groups as $g) {
+                printf("%s\n", $g);
+            }
+        }            
+        printf("\n");
     }
     static function addOptions(array &$optionlist, string $s, string $starts=''){
         $optionlist = array_merge($optionlist, explode(',', str_replace(' ', '', str_replace($starts,  '', $s)))); 
@@ -62,8 +61,8 @@ class Group {
             $_skip = strtok($line, '()');  $options = strtok('()');   $_skip = strtok('()');
             $aoptions = explode('; ', $options);
             foreach($aoptions as $a){
-                if(strpos($a, 'weak to')===0)   Group::addOptions($weakto,   $a, 'weak to');
-                if(strpos($a, 'immune to')===0) Group::addOptions($strongto, $a, 'immune to');
+                if(strpos($a, $x='weak to')===0)   Group::addOptions($weakto,   $a, $x);
+                if(strpos($a, $x='immune to')===0) Group::addOptions($strongto, $a, $x);
             }        
             $this->weakto=$weakto;
             $this->strongto=$strongto;
@@ -78,7 +77,7 @@ class Group {
         }
     }
     function extractInfoFromLine(string $line){
-        printf("group id: %5d : kind: %10s | line: %s\n", $this->id, $this->kind, $line);
+        //printf("group id: %5d : kind: %10s | line: %s\n", $this->id, $this->kind, $line);
         $this->extractUnitsAndHP($line);
         $this->extractOptions($line);
         $this->extractAttackAndInitiative($line);
