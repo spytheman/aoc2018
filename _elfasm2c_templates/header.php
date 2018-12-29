@@ -9,7 +9,7 @@
 
 /// This text should be put into a C++ file, for example elfProgram.cpp 
 /// ... then it should be compiled with: 
-///     g++ -std=c++14 -g  -c elfProgram.cpp  -o elfProgram.o 
+///     g++ -Wall -pedantic -Ofast -march=native -mtune=native -mavx -c elfProgram.cpp  -o elfProgram.o 
 <? commentSeparatorLine(); ?>
 
 /// ipidx: <?= $ipidx ?>
