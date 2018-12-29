@@ -18,7 +18,7 @@ printf("char * Elf_regs2string(){");
 echo  ('  sprintf(_regsbuffer, "R:['.join(',',$regpercents).']", '.join(',',$regnames).");");
 printf("  return _regsbuffer; ");
 printf("}\n");
-echo("#define badJump(line, xIP) { fprintf(stderr, \"Long jump made at line %d . IP was: %d.\\n\", (line), (xIP)); abort(); } \n");
+echo("#define badJump(line, xIP) { printf(\"Long jump made at line %d . IP was: %d. %s .\\n\", (line), (xIP), Elf_regs2string() ); abort(); } \n");
 echo("#define IPOST { {$rip}++; c++; if( c >= maxCount ) goto lBatchFinished; } \n");
 printf("bool Elf_emulate(long maxCount, long *actualIterationCount)\n");
 printf("{\n");
