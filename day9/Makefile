@@ -1,4 +1,4 @@
-CFLAGS=-Wall -O3
+CFLAGS=-Wall -pedantic -Ofast -march=native -mtune=native -mavx
 
 solution:
 

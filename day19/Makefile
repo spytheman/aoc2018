@@ -1,4 +1,4 @@
-CPPFLAGS=-std=c++14  -Ofast -march=native -mtune=native -mavx
+CPPFLAGS=-std=c++14 -Wall -pedantic -Ofast -march=native -mtune=native -mavx
 
 day19: day19.cpp
 

@@ -1,4 +1,4 @@
-CFLAGS=-Wall -O2
+CFLAGS=-Wall -pedantic -Ofast -march=native -mtune=native -mavx
 LDLIBS=-lm
 
 solution:
