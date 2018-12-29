@@ -5,7 +5,7 @@
 
 ////////////////////////////////////////////////////////////////////////////
 /// This is a generated file. Edit it on your risk.
-/// This was produced by running: elfasm2c.php ../day21/input
+/// This was produced by running: elfasm2c.php input
 /// This text should be put into a C++ file, for example elfProgram.cpp 
 /// ... then it should be compiled with: 
 ///     g++ -Wall -pedantic -Ofast -march=native -mtune=native -mavx -c elfProgram.cpp  -o elfProgram.o 
@@ -20,8 +20,10 @@
 int r0=0,r1=0,r2=0,r3=0,r4=0,r5=0;
 char _regsbuffer[255];
 char * Elf_regs2string(){  sprintf(_regsbuffer, "R:[%9d,%9d,%9d,%9d,%9d,%9d]", r0,r1,r2,r3,r4,r5);  return _regsbuffer; }
-#define badJump(line, xIP) { fprintf(stderr, "Long jump made at line %d . IP was: %d.\n", (line), (xIP)); abort(); } 
+#define badJump(line, xIP) { printf("Long jump made at line %d . IP was: %d. %s .\n", (line), (xIP), Elf_regs2string() ); abort(); } 
 #define IPOST { r1++; c++; if( c >= maxCount ) goto lBatchFinished; } 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 bool Elf_emulate(long maxCount, long *actualIterationCount)
 {
   static void *glabels[] = { &&l0, &&l1, &&l2, &&l3, &&l4, &&l5, &&l6, &&l7, &&l8, &&l9, &&l10, &&l11, &&l12, &&l13, &&l14, &&l15, &&l16, &&l17, &&l18, &&l19, &&l20, &&l21, &&l22, &&l23, &&l24, &&l25, &&l26, &&l27, &&l28, &&l29, &&l30, &&l31, &&l32, &&l33, &&l34, &&l35 };
@@ -75,6 +77,7 @@ bool Elf_emulate(long maxCount, long *actualIterationCount)
        *actualIterationCount += c;
        return true;
 }
+#pragma GCC diagnostic pop
 
 
 int main(int argc, char **argv)
