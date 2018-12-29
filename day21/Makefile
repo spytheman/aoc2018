@@ -1,4 +1,4 @@
-CXX = clang++
+CXX = g++
 SOURCES=$(shell find . -name '*.cpp')
 CPPFLAGS=-std=c++14 -Wall -pedantic -Ofast -march=native -mtune=native -mavx
 TARGETS=day21 runElfInput day21TranspiledElfProgram day21TranspiledElfProgram_Direct day21TranspiledElfProgram_Switch
