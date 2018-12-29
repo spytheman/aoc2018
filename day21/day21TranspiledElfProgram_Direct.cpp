@@ -20,7 +20,8 @@
 int r0=0,r1=0,r2=0,r3=0,r4=0,r5=0;
 char _regsbuffer[255];
 char * Elf_regs2string(){  sprintf(_regsbuffer, "R:[%9d,%9d,%9d,%9d,%9d,%9d]", r0,r1,r2,r3,r4,r5);  return _regsbuffer; }
-#define badJump(line, reg) { fprintf(stderr, "Long jump made at line %d . Offset value was: %d.\n", (line), (reg)); abort(); } 
+#define badJump(line, xIP) { fprintf(stderr, "Long jump made at line %d . IP was: %d.\n", (line), (xIP)); abort(); } 
+#define IPOST { r1++; c++; if( c >= maxCount ) goto lBatchFinished; } 
 bool Elf_emulate(long maxCount, long *actualIterationCount)
 {
   static void *glabels[] = { &&l0, &&l1, &&l2, &&l3, &&l4, &&l5, &&l6, &&l7, &&l8, &&l9, &&l10, &&l11, &&l12, &&l13, &&l14, &&l15, &&l16, &&l17, &&l18, &&l19, &&l20, &&l21, &&l22, &&l23, &&l24, &&l25, &&l26, &&l27, &&l28, &&l29, &&l30, &&l31, &&l32, &&l33, &&l34, &&l35 };
@@ -29,37 +30,37 @@ bool Elf_emulate(long maxCount, long *actualIterationCount)
 
   goto *glabels[ r1 ]; 
 
-      l0:   r3 = 123;                r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["seti",123,0,3]
-      l1:   r3 = r3 & 456;           r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["bani",3,456,3]
-      l2:   r3 = (r3 == 72)?1:0;     r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["eqri",3,72,3]
-      l3:   r1 = r3 + r1;            r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(3, r1);  // ["addr",3,1,1]
-      l4:   r1 = 0;                  r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(4, r1);  // ["seti",0,0,1]
-      l5:   r3 = 0;                  r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["seti",0,9,3]
-      l6:   r5 = r3 | 65536;         r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["bori",3,65536,5]
-      l7:   r3 = 15028787;           r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["seti",15028787,4,3]
-      l8:   r2 = r5 & 255;           r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["bani",5,255,2]
-      l9:   r3 = r3 + r2;            r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["addr",3,2,3]
-     l10:   r3 = r3 & 16777215;      r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["bani",3,16777215,3]
-     l11:   r3 = r3 * 65899;         r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["muli",3,65899,3]
-     l12:   r3 = r3 & 16777215;      r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["bani",3,16777215,3]
-     l13:   r2 = (256 > r5)?1:0;     r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["gtir",256,5,2]
-     l14:   r1 = r2 + r1;            r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(14, r1);  // ["addr",2,1,1]
-     l15:   r1 = r1 + 1;             r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(15, r1);  // ["addi",1,1,1]
-     l16:   r1 = 27;                 r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(16, r1);  // ["seti",27,3,1]
-     l17:   r2 = 0;                  r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["seti",0,9,2]
-     l18:   r4 = r2 + 1;             r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["addi",2,1,4]
-     l19:   r4 = r4 * 256;           r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["muli",4,256,4]
-     l20:   r4 = (r4 > r5)?1:0;      r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["gtrr",4,5,4]
-     l21:   r1 = r4 + r1;            r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(21, r1);  // ["addr",4,1,1]
-     l22:   r1 = r1 + 1;             r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(22, r1);  // ["addi",1,1,1]
-     l23:   r1 = 25;                 r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(23, r1);  // ["seti",25,1,1]
-     l24:   r2 = r2 + 1;             r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["addi",2,1,2]
-     l25:   r1 = 17;                 r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(25, r1);  // ["seti",17,8,1]
-     l26:   r5 = r2;                 r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["setr",2,4,5]
-     l27:   r1 = 7;                  r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(27, r1);  // ["seti",7,3,1]
-     l28:   r2 = (r3 == r0)?1:0;     r1++; if( ++c >= maxCount ) goto lBatchFinished; // ["eqrr",3,0,2]
-     l29:   r1 = r2 + r1;            r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(29, r1);  // ["addr",2,1,1]
-     l30:   r1 = 5;                  r1++; if( ++c >= maxCount ) goto lBatchFinished; if( r1 <= 31 ) goto *glabels[ r1 ]; else badJump(30, r1);  // ["seti",5,3,1]
+      l0:   r3 = 123;                 IPOST;  // ["seti",123,0,3]
+      l1:   r3 = r3 & 456;            IPOST;  // ["bani",3,456,3]
+      l2:   r3 = (r3 == 72)?1:0;      IPOST;  // ["eqri",3,72,3]
+      l3:   r1 = r3 + r1;             IPOST;  if( r1 > 31 ) badJump(3, r1); goto *glabels[ r1 ];  // ["addr",3,1,1]
+      l4:   r1 = 0;                   IPOST;  if( r1 > 31 ) badJump(4, r1); goto *glabels[ r1 ];  // ["seti",0,0,1]
+      l5:   r3 = 0;                   IPOST;  // ["seti",0,9,3]
+      l6:   r5 = r3 | 65536;          IPOST;  // ["bori",3,65536,5]
+      l7:   r3 = 15028787;            IPOST;  // ["seti",15028787,4,3]
+      l8:   r2 = r5 & 255;            IPOST;  // ["bani",5,255,2]
+      l9:   r3 = r3 + r2;             IPOST;  // ["addr",3,2,3]
+     l10:   r3 = r3 & 16777215;       IPOST;  // ["bani",3,16777215,3]
+     l11:   r3 = r3 * 65899;          IPOST;  // ["muli",3,65899,3]
+     l12:   r3 = r3 & 16777215;       IPOST;  // ["bani",3,16777215,3]
+     l13:   r2 = (256 > r5)?1:0;      IPOST;  // ["gtir",256,5,2]
+     l14:   r1 = r2 + r1;             IPOST;  if( r1 > 31 ) badJump(14, r1); goto *glabels[ r1 ];  // ["addr",2,1,1]
+     l15:   r1 = r1 + 1;              IPOST;  if( r1 > 31 ) badJump(15, r1); goto *glabels[ r1 ];  // ["addi",1,1,1]
+     l16:   r1 = 27;                  IPOST;  if( r1 > 31 ) badJump(16, r1); goto *glabels[ r1 ];  // ["seti",27,3,1]
+     l17:   r2 = 0;                   IPOST;  // ["seti",0,9,2]
+     l18:   r4 = r2 + 1;              IPOST;  // ["addi",2,1,4]
+     l19:   r4 = r4 * 256;            IPOST;  // ["muli",4,256,4]
+     l20:   r4 = (r4 > r5)?1:0;       IPOST;  // ["gtrr",4,5,4]
+     l21:   r1 = r4 + r1;             IPOST;  if( r1 > 31 ) badJump(21, r1); goto *glabels[ r1 ];  // ["addr",4,1,1]
+     l22:   r1 = r1 + 1;              IPOST;  if( r1 > 31 ) badJump(22, r1); goto *glabels[ r1 ];  // ["addi",1,1,1]
+     l23:   r1 = 25;                  IPOST;  if( r1 > 31 ) badJump(23, r1); goto *glabels[ r1 ];  // ["seti",25,1,1]
+     l24:   r2 = r2 + 1;              IPOST;  // ["addi",2,1,2]
+     l25:   r1 = 17;                  IPOST;  if( r1 > 31 ) badJump(25, r1); goto *glabels[ r1 ];  // ["seti",17,8,1]
+     l26:   r5 = r2;                  IPOST;  // ["setr",2,4,5]
+     l27:   r1 = 7;                   IPOST;  if( r1 > 31 ) badJump(27, r1); goto *glabels[ r1 ];  // ["seti",7,3,1]
+     l28:   r2 = (r3 == r0)?1:0;      IPOST;  // ["eqrr",3,0,2]
+     l29:   r1 = r2 + r1;             IPOST;  if( r1 > 31 ) badJump(29, r1); goto *glabels[ r1 ];  // ["addr",2,1,1]
+     l30:   r1 = 5;                   IPOST;  if( r1 > 31 ) badJump(30, r1); goto *glabels[ r1 ];  // ["seti",5,3,1]
 
      l31: ; // program end padding 
      l32: ; // program end padding 
