@@ -18,7 +18,7 @@ printf("char * Elf_regs2string(){");
 echo  ('  sprintf(_regsbuffer, "R:['.join(',',$regpercents).']", '.join(',',$regnames).");");
 printf("  return _regsbuffer; ");
 printf("}\n");
-echo("#define badJump(line, reg) { fprintf(stderr, \"Long jump made at line %d . Offset value was: %d.\\n\", (line), (reg)); abort(); } \n");
+echo("#define badJump(line, xIP) { fprintf(stderr, \"Long jump made at line %d . IP was: %d.\\n\", (line), (xIP)); abort(); } \n");
 printf("bool Elf_emulate(long maxCount, long *actualIterationCount)\n");
 printf("{\n");
 $programEndWithPadding=$programsize+5;
@@ -33,7 +33,7 @@ for($i=0;$i<$programsize;$i++){
     $label = "l{$i}:";
     $ins = $program[$i];
     $cop = ";";
-    $smetainstruction = "{$rip}++; if( ++c >= maxCount ) goto lBatchFinished;";
+    $smetainstruction = "{$rip}++; c++; if( c >= maxCount ) goto lBatchFinished;";
     switch($ins[0]){
      case "addr": $cop = " r{$ins[3]} = r{$ins[1]} + r{$ins[2]}; "; break;
      case "addi": $cop = " r{$ins[3]} = r{$ins[1]} + {$ins[2]}; "; break;
@@ -53,7 +53,7 @@ for($i=0;$i<$programsize;$i++){
      case "eqrr": $cop = " r{$ins[3]} = (r{$ins[1]} == r{$ins[2]})?1:0; "; break;
     }
     if($ins[3] === $ipidx){
-        $smetainstruction .= " if( {$rip} <= {$programsize} ) goto *glabels[ {$rip} ]; else badJump({$i}, {$rip}); "; // not optimized, but works in every case :-)
+        $smetainstruction .= " if( {$rip} > {$programsize} ) badJump({$i}, {$rip}); goto *glabels[ {$rip} ]; "; // not optimized, but works in every case :-)
         switch('x'.$ins[0]){
          case 'seti':{
              $lgoto = "l".($ins[1]+1); // +1 since the IP would be incremented *after each* instruction
