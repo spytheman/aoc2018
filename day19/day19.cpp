@@ -69,8 +69,6 @@ int main(int argc, char **argv)
      int batchsize = 65000000;
      Instruction instructions[1000];
      Instruction *ci;
-     char cmd[32];
-     int a1, a2, a3;
      if( argc > 1 ) {
           for(int i=0;i<argc;i++) printf("Arg: %d = '%s'\n",i, argv[i]);
           strcpy(inputfile, argv[1]);
