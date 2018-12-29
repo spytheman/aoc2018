@@ -62,8 +62,7 @@ for($i=0;$i<$programsize;$i++){
          case 'seti':{
              $nip = ($ins[1]+1); // +1 since the IP should be incremented *after each* instruction
              $lgoto = "l{$nip}"; 
-             $cop = " ++c; {$rip}={$nip}; BEND; goto {$lgoto}; ";
-             $smetainstruction = '';
+             $cop = ""; $smetainstruction = " ++c; {$rip}={$nip}; BEND; goto {$lgoto}; ";
              break;
          }
          case 'addr':{
@@ -71,8 +70,7 @@ for($i=0;$i<$programsize;$i++){
                  $conditionR  = "r{$ins[1]}";
                  $lnext = "l".($i+1);
                  $lskip = "l".($i+2);
-                 $cop = " ++c; {$rip}++; if({$conditionR}==1){$rip}++; BEND; if({$conditionR}==0){goto {$lnext};} else if({$conditionR}==1){goto {$lskip};} else badJump(c, {$i}, r{$ins[1]}+{$rip} ); ";
-                 $smetainstruction = '';
+                 $cop = ""; $smetainstruction = " ++c; {$rip}++; if({$conditionR}==1){$rip}++; BEND; if({$conditionR}==0){goto {$lnext};} else if({$conditionR}==1){goto {$lskip};} else badJump(c, {$i}, r{$ins[1]}+{$rip} ); ";
              }
              break;
          }
@@ -80,8 +78,7 @@ for($i=0;$i<$programsize;$i++){
              if($ins[2]===$ipidx){
                  $nip = ($i+$ins[1]+1);
                  $lgoto = "l{$nip}";
-                 $cop = " ++c; {$rip}={$nip}; BEND; goto {$lgoto};";
-                 $smetainstruction = '';
+                 $cop = ""; $smetainstruction = " ++c; {$rip}={$nip}; BEND; goto {$lgoto};";
              }
              break;
          }
