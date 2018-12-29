@@ -18,8 +18,9 @@ printf("char * Elf_regs2string(){");
 echo  ('  sprintf(_regsbuffer, "R:['.join(',',$regpercents).']", '.join(',',$regnames).");");
 printf("  return _regsbuffer; ");
 printf("}\n");
-echo("#define badJump(line, xIP) { printf(\"Long jump made at line %d . IP was: %d. %s .\\n\", (line), (xIP), Elf_regs2string() ); abort(); } \n");
-echo("#define IPOST { {$rip}++; c++; if( c >= maxCount ) goto lBatchFinished; } \n");
+echo("#define badJump(c, line, xIP) { printf(\"Long jump made at line %d . C: %12ld, IP was: %d. %s .\\n\", (line), (c), (xIP), Elf_regs2string() ); abort(); } \n");
+echo("#define BEND {if(c>=maxCount)goto lBatchFinished;} \n");
+echo("#define IPOST { ++{$rip}, ++c; BEND; } \n");
 echo("#pragma GCC diagnostic push\n");
 echo("#pragma GCC diagnostic ignored \"-Wpedantic\"\n");    
 printf("bool Elf_emulate(long maxCount, long *actualIterationCount)\n");
@@ -56,11 +57,12 @@ for($i=0;$i<$programsize;$i++){
      case "eqrr": $cop = " r{$ins[3]} = (r{$ins[1]} == r{$ins[2]})?1:0; "; break;
     }
     if($ins[3] === $ipidx){
-        $smetainstruction .= " if( {$rip} > {$programsize} ) badJump({$i}, {$rip}); goto *glabels[ {$rip} ]; "; // not optimized, but works in every case :-)
-        switch('x'.$ins[0]){
+        $smetainstruction .= " if( {$rip} > {$programsize} ) badJump(c, {$i}, {$rip}); goto *glabels[ {$rip} ]; "; // not optimized, but works in every case :-)
+        switch($ins[0]){
          case 'seti':{
-             $lgoto = "l".($ins[1]+1); // +1 since the IP would be incremented *after each* instruction
-             $cop = " goto {$lgoto};";
+             $nip = ($ins[1]+1); // +1 since the IP should be incremented *after each* instruction
+             $lgoto = "l{$nip}"; 
+             $cop = " ++c; {$rip}={$nip}; BEND; goto {$lgoto}; ";
              $smetainstruction = '';
              break;
          }
@@ -69,15 +71,16 @@ for($i=0;$i<$programsize;$i++){
                  $conditionR  = "r{$ins[1]}";
                  $lnext = "l".($i+1);
                  $lskip = "l".($i+2);
-                 $cop = " switch( $conditionR ) { case 0: goto {$lnext}; case 1: goto {$lskip}; default: badJump({$i}, $conditionR); }; ";
+                 $cop = " ++c; {$rip}++; if({$conditionR}==1){$rip}++; BEND; if({$conditionR}==0){goto {$lnext};} else if({$conditionR}==1){goto {$lskip};} else badJump(c, {$i}, r{$ins[1]}+{$rip} ); ";
                  $smetainstruction = '';
              }
              break;
          }
          case 'addi':{
              if($ins[2]===$ipidx){
-                 $lgoto = "l".($i+$ins[1]+1);
-                 $cop = " goto {$lgoto};";
+                 $nip = ($i+$ins[1]+1);
+                 $lgoto = "l{$nip}";
+                 $cop = " ++c; {$rip}={$nip}; BEND; goto {$lgoto};";
                  $smetainstruction = '';
              }
              break;
