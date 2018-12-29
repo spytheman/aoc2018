@@ -9,6 +9,8 @@ Timed with:
 The brute force C solution in day19.cpp is *much* faster ...
 It runs at around ~148 000 000 instructions/s .
 
+(The newly generated day19_specialized.cpp is even faster:
+it emulates around ~1 290 000 000 ins/s, but even this will finish in ~20 hours lol)
 
 However the emulated program runs a quadratic algo, and N is ~10551306 .
 So the instructions needed are proportional to N^2 = 111330058305636 .
