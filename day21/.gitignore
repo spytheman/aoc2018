@@ -3,3 +3,4 @@ day21
 elfProgram.o
 runElfInput
 day21TranspiledElfProgram
+day21TranspiledElfProgram_Direct
