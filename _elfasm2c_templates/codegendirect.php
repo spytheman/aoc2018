@@ -19,6 +19,7 @@ echo  ('  sprintf(_regsbuffer, "R:['.join(',',$regpercents).']", '.join(',',$reg
 printf("  return _regsbuffer; ");
 printf("}\n");
 echo("#define badJump(line, xIP) { fprintf(stderr, \"Long jump made at line %d . IP was: %d.\\n\", (line), (xIP)); abort(); } \n");
+echo("#define IPOST { {$rip}++; c++; if( c >= maxCount ) goto lBatchFinished; } \n");
 printf("bool Elf_emulate(long maxCount, long *actualIterationCount)\n");
 printf("{\n");
 $programEndWithPadding=$programsize+5;
@@ -33,7 +34,7 @@ for($i=0;$i<$programsize;$i++){
     $label = "l{$i}:";
     $ins = $program[$i];
     $cop = ";";
-    $smetainstruction = "{$rip}++; c++; if( c >= maxCount ) goto lBatchFinished;";
+    $smetainstruction = " IPOST; ";
     switch($ins[0]){
      case "addr": $cop = " r{$ins[3]} = r{$ins[1]} + r{$ins[2]}; "; break;
      case "addi": $cop = " r{$ins[3]} = r{$ins[1]} + {$ins[2]}; "; break;
