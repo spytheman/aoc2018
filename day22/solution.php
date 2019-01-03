@@ -4,6 +4,7 @@ include("common.php");
 ini_set('xdebug.max_nesting_level', 2012);
 ini_set('zend.assertions', 1);
 ini_set('assert.exception', 1);
+
 $lines = read_input(); $depth  = 0; $tx=0; $ty=0;
 foreach($lines as $line){
     if(strpos($line, 'depth:')===0) sscanf($line, 'depth: %d', $depth);
@@ -34,22 +35,22 @@ showGridZone($ag, 0,0, $mx+1, $my+1, 1);
 printf("Total risk for the area: %10d\n", $sumrisk);
 
 // part 2
-$movecosts = ['U'=>1,'D'=>1,'L'=>1,'R'=>1,  'T'=>7,'C'=>7,'N'=>7,];
+$possibletools = [ '.'=>['T','C'], '='=>['C','N'], '|'=>['T','N'], ];
+$toolcosts = ['T'=>7,'C'=>7,'N'=>7,];
 $mg = A2Dnew($mx,$my,SPACE_EMPTY);
 $distances = A2Dnew($mx,$my,0); for($y=0;$y<=$my;$y++) for($x=0;$x<=$mx;$x++) $distances[$y][$x] = (int) (abs($y-$ty) + abs($x-$tx));
 
 $visited = []; 
-$mweight = PHP_INT_MAX;
 $positionsQ = new Ds\PriorityQueue(); 
-$positionsQ->push(['cx'=>0,'cy'=>0,'ck'=>$ag[0][0],'ct'=>'T','cm'=>0,'cd'=>$mweight,'cw'=>$mweight, 'pm'=>'z', 'pmoves'=>[], ], $mweight);
-$cpositions=0; 
+$positionsQ->push(['cx'=>0,'cy'=>0,'ck'=>$ag[0][0],'ct'=>'T','cm'=>0,'cd'=>$mx*$my,'cw'=>0, 'pm'=>'z', 'pmoves'=>[], ], 0);
+$cpositions=0; $spositions = 0;
 while(!$positionsQ->isEmpty() && $cstate = $positionsQ->pop() ){
     $cpositions++;
     ['cx'=>$cx, 'cy'=>$cy, 'ck'=>$ck, 'ct'=>$ct, 'cm'=>$cm, 'cd'=>$cd, 'cw'=>$cw, 'pm'=>$pm, 'pmoves'=>$pmoves]=$cstate;    
 
-    if(0 === $cpositions % 1000){
-        printf("cpositions so far: %8d | lpositionsQ: %5d | cx: %4d | cy: %4d | ct: %1s | cm: %4d | pm: %1s | cw: %4d | ck: %1s \n",
-               $cpositions,
+    if(0 === $cpositions % 200000){
+        printf("cpos: %5d | spos: %5d | lpositionsQ: %5d | cx: %4d | cy: %4d | ct: %1s | cm: %4d | pm: %1s | cw: %4d | ck: %1s \n",
+               $cpositions, $spositions,
                $positionsQ->count(),
                $cx, $cy, $ct, $cm, $pm, $cw, $ck );
         showMoves($pmoves);
@@ -58,69 +59,56 @@ while(!$positionsQ->isEmpty() && $cstate = $positionsQ->pop() ){
     if( isset($visited[$cy][$cx][$ct]) ) {
         // Already visited this coordinate, equiped with this same tool ... 
         // Cut moving in circles by skipping and going to the next queued position
-        continue;
+        { $spositions++; continue; }
     }
-    $visited[$cy][$cx][$ct] = true;
+    $visited[$cy][$cx][$ct] = $cm;
 
-    if($cx === $tx && $cy === $ty && $ct === 'T'){
+    if($cx === $tx && $cy === $ty ){
         printf("--- found route minutes: %4d \n", $cm);
-        printf("cpositions: %8d | cx: %4d | cy: %4d | ct: %1s | cm: %4d | pm: %1s \n", 
-               $cpositions, 
-               $cx, $cy, $ct, $cm, $pm );
         showMoves($pmoves);
         printf("--- Found new route, minutes: %4d | path.length: %4d | path: '%s'\n", $cm, count($pmoves), join('', $pmoves));
+        printf("cpos: %8d | spos: %5d | cx: %4d | cy: %4d | ct: %1s | cm: %4d | pm: %1s \n",
+               $cpositions, $spositions,
+               $cx, $cy, $ct, $cm, $pm );
+        //continue;
         exit();
-    }
-    
-    $cmoves = $movecosts;
-    unset($cmoves[ $ct ]); // No point to change to the already selected tool    
-    if('.' === $ck) unset($cmoves['N']);  
-    if('=' === $ck) unset($cmoves['T']); 
-    if('|' === $ck) unset($cmoves['C']);  
-    if($cx <=  0)   unset($cmoves['L']); 
-    if($mx <=  $cx) unset($cmoves['R']); 
-    if($cy <=  0)   unset($cmoves['U']);  
-    if($my <=  $cy) unset($cmoves['D']);    
-    if($cx === $tx && $cy === $ty && $ct !== 'T') { // Arrived at the target. No need to move anymore.        
-        unset($cmoves['U']); 
-        unset($cmoves['D']); 
-        unset($cmoves['L']); 
-        unset($cmoves['R']); 
     }    
-    if( strpos('TC ', $pm) !== FALSE ){ // The previous move was a change move. 
-        // There is no point to change a tool twice in a row, while staying in the same position.
-        unset($cmoves['T']); 
-        unset($cmoves['C']); 
-        unset($cmoves['N']);
-    }
-    
-    foreach($cmoves as $move=>$mcost){
-        $ny = (int) $cy; $nx = (int) $cx; $nt = $ct;
-        switch($move){
-         case 'U':$ny--; break; 
-         case 'D':$ny++; break; 
-         case 'L':$nx--; break; 
-         case 'R':$nx++; break;
-         case 'T':; case 'C':; case 'N': { $nt=$move; break; }
-        }
-        if( ($nx<0||$nx>$mx) || ($ny<0||$ny>$my) ) continue;        
+    $moves = [ 
+              ['R', $cx+1, $cy,   $ct, 1], 
+              ['D', $cx,   $cy+1, $ct, 1], 
+              ['U', $cx,   $cy-1, $ct, 1],  
+              ['L', $cx-1, $cy,   $ct, 1], 
+              ];
+    foreach($moves as [$move, $nx, $ny, $nt, $mcost]){
+        if( ($nx<0||$nx>$mx) || ($ny<0||$ny>$my) ) continue; // moving is restricted to the grid size
         $nck = $ag[$ny][$nx];
-        if('.' === $nck && $nt === 'N'){ continue; }
-        if('=' === $nck && $nt === 'T'){ continue; }
-        if('|' === $nck && $nt === 'C'){ continue; }        
-        if($nx === $tx && $ny === $ty && $nt !== 'T' ){ continue; }
-        /////////////////////////////////////////////////////////////
         $ncd = $distances[$ny][$nx];
-        $mcost = (int) $mcost;
+        
+        $mcost += ($nx === $tx && $ny === $ty && $ct !== 'T') ? $toolcosts['T'] : 0;
+        
+        $newmoves = [];        
+        if($ck !== $nck ){
+            // going to another type of terrain ...
+            $availabletools = array_intersect( $possibletools[ $ck ], $possibletools[ $nck ] );
+            $nt = array_shift($availabletools);
+            if($nt !== $ct ){
+                // we have to change the current tool
+                $mcost += $toolcosts[ $nt ];
+                $newmoves[] = $nt;
+            }            
+        }
+        $newmoves[] = $move;
+        
+        $nmoves = array_merge($pmoves, $newmoves);
         $ncm = $cm + $mcost;
-        $ncw = $mweight - $ncm - $ncd;
-        $nmoves = $pmoves; $nmoves[] = $move;
+        $ncw = 0 - $ncm - $ncd;
         $positionsQ->push( ['cx'=>(int)$nx,  'cy'=>(int)$ny, 'ck'=>$nck, 'ct'=>$nt,
                             'cm'=>(int)$ncm, 'cd'=>$ncd,     'cw'=>$ncw, 
                             'pm'=>$move, 'pmoves'=>$nmoves, ],
-                           $ncw );
+                           $ncw );        
     }    
 }
+printf("Total cpos: %8d , spos: %8d \n", $cpositions, $spositions);
 
 function showMoves($pmoves){
     global $mx, $my;
