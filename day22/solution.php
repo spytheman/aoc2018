@@ -33,27 +33,26 @@ showGridZone($ag, 0,0, $mx+1, $my+1, 1);
 printf("Total risk for the area: %10d\n", $sumrisk);
 
 // part 2
-$movecosts = ['U'=>1,'D'=>1,'L'=>1,'R'=>'1',   'T'=>7, 'C'=>7, ' '=>7]; 
-$maxmoves = PHP_INT_MAX; $maxminutes = PHP_INT_MAX;
-$mg  = A2Dnew($mx,$my,SPACE_EMPTY);
+$movecosts = ['U'=>1,'D'=>1,'L'=>1,'R'=>1,  'T'=>7,'C'=>7,'N'=>7,];
+$mg = A2Dnew($mx,$my,SPACE_EMPTY);
 $distances = A2Dnew($mx,$my,0); for($y=0;$y<=$my;$y++) for($x=0;$x<=$mx;$x++) $distances[$y][$x] = (int) (abs($y-$ty) + abs($x-$tx));
 
-$visited = [];
+$visited = []; 
 $mweight = PHP_INT_MAX;
-$cpositions=0;
-$positionsQ = new Ds\PriorityQueue();
-$positionsQ->push(['cx'=>0,'cy'=>0,'ct'=>'T','cm'=>0,'cd'=>$mweight,'cw'=>$mweight, 'pm'=>'z', 'pmoves'=>[], ], $mweight);
-while(!$positionsQ->isEmpty()){
-    $cstate = $positionsQ->pop();
-    if(!$cstate)break;
+$positionsQ = new Ds\PriorityQueue(); 
+$positionsQ->push(['cx'=>0,'cy'=>0,'ck'=>$ag[0][0],'ct'=>'T','cm'=>0,'cd'=>$mweight,'cw'=>$mweight, 'pm'=>'z', 'pmoves'=>[], ], $mweight);
+$cpositions=0; 
+while(!$positionsQ->isEmpty() && $cstate = $positionsQ->pop() ){
     $cpositions++;
-    
-    $cx     = (int) $cstate['cx']; 
-    $cy     = (int) $cstate['cy']; 
-    $cm     = (int) $cstate['cm'];
-    $ct     = $cstate['ct'];
-    $pm     = $cstate['pm'];
-    $pmoves = $cstate['pmoves'];
+    ['cx'=>$cx, 'cy'=>$cy, 'ck'=>$ck, 'ct'=>$ct, 'cm'=>$cm, 'cd'=>$cd, 'cw'=>$cw, 'pm'=>$pm, 'pmoves'=>$pmoves]=$cstate;    
+
+    if(0 === $cpositions % 1000){
+        printf("cpositions so far: %8d | lpositionsQ: %5d | cx: %4d | cy: %4d | ct: %1s | cm: %4d | pm: %1s | cw: %4d | ck: %1s \n",
+               $cpositions,
+               $positionsQ->count(),
+               $cx, $cy, $ct, $cm, $pm, $cw, $ck );
+        showMoves($pmoves);
+    }        
     
     if( isset($visited[$cy][$cx][$ct]) ) {
         // Already visited this coordinate, equiped with this same tool ... 
@@ -61,60 +60,51 @@ while(!$positionsQ->isEmpty()){
         continue;
     }
     $visited[$cy][$cx][$ct] = true;
-        
-    if(0 === $cpositions % 10000){
-        printf("cpositions so far: %8d | lpositionsQ: %5d | cx: %4d | cy: %4d | ct: %1s | cm: %4d | pm: %1s \n", 
-               $cpositions, 
-               $positionsQ->count(), 
-               $cx, $cy, $ct, $cm, $pm );
-        showMoves($pmoves);
-    }
-    
+
     if($cx === $tx && $cy === $ty && $ct === 'T'){
-        if( $maxminutes > $cm ) $maxminutes = $cm;
         printf("--- found route minutes: %4d \n", $cm);
         printf("cpositions: %8d | cx: %4d | cy: %4d | ct: %1s | cm: %4d | pm: %1s \n", 
                $cpositions, 
                $cx, $cy, $ct, $cm, $pm );
         showMoves($pmoves);
-        printf("--- Found new route, minutes: %4d | maxminutes: %4d | path.length: %4d | path: '%s'\n", $cm, $maxminutes, count($pmoves), join('', $pmoves));
+        printf("--- Found new route, minutes: %4d | path.length: %4d | path: '%s'\n", $cm, count($pmoves), join('', $pmoves));
         exit();
     }
     
-    $ck = $ag[$cy][$cx];
-    //if( $cm > $maxminutes ) { /*echo "Cut: cm={$cm} > maxminutes={$maxminutes}\n";*/ continue; }
-
     $cmoves = $movecosts;
-    unset($cmoves[ $ct ]); // no point to change to the already selected tool
-    
-    if('.' === $ck) unset($cmoves[' ']);
-    if('=' === $ck) unset($cmoves['T']);
-    if('|' === $ck) unset($cmoves['C']);
-    
-    if($cx <=  0)   unset($cmoves['L']);     if($mx <=  $cx) unset($cmoves['R']);
-    if($cy <=  0)   unset($cmoves['U']);     if($my <=  $cy) unset($cmoves['D']);
-    
-    if($cx === $tx && $cy === $ty && $ct !== 'T') {
-        // arrived at the target. No need to move anymore. Just schedule a tool change...
-        unset($cmoves['U']); unset($cmoves['D']); unset($cmoves['L']); unset($cmoves['R']); 
-    }
-    
-    $isPrevMoveAToolChange = in_array($pm, ['T','C',' ']);
-    if( $isPrevMoveAToolChange ){
-        // There is no point to change a tool twice in a row, staying in the same position.
-        unset($cmoves['T']); unset($cmoves['C']); unset($cmoves[' ']);
+    unset($cmoves[ $ct ]); // No point to change to the already selected tool    
+    if('.' === $ck) unset($cmoves['N']);  
+    if('=' === $ck) unset($cmoves['T']); 
+    if('|' === $ck) unset($cmoves['C']);  
+    if($cx <=  0)   unset($cmoves['L']); 
+    if($mx <=  $cx) unset($cmoves['R']); 
+    if($cy <=  0)   unset($cmoves['U']);  
+    if($my <=  $cy) unset($cmoves['D']);    
+    if($cx === $tx && $cy === $ty && $ct !== 'T') { // Arrived at the target. No need to move anymore.        
+        unset($cmoves['U']); 
+        unset($cmoves['D']); 
+        unset($cmoves['L']); 
+        unset($cmoves['R']); 
+    }    
+    if( strpos('TC ', $pm) !== FALSE ){ // The previous move was a change move. 
+        // There is no point to change a tool twice in a row, while staying in the same position.
+        unset($cmoves['T']); 
+        unset($cmoves['C']); 
+        unset($cmoves['N']);
     }
     
     foreach($cmoves as $move=>$mcost){
         $ny = (int) $cy; $nx = (int) $cx; $nt = $ct;
         switch($move){
-         case 'U':$ny--;  break;         case 'D':$ny++;  break;
-         case 'L':$nx--;  break;         case 'R':$nx++;  break;
-         case 'T':; case 'C':; case ' ': { $nt=$move; break; }
+         case 'U':$ny--; break; 
+         case 'D':$ny++; break; 
+         case 'L':$nx--; break; 
+         case 'R':$nx++; break;
+         case 'T':; case 'C':; case 'N': { $nt=$move; break; }
         }
-        if( ($nx<0||$nx>$mx) || ($ny<0||$ny>$my) )continue;        
+        if( ($nx<0||$nx>$mx) || ($ny<0||$ny>$my) ) continue;        
         $nck = $ag[$ny][$nx];
-        if('.' === $nck && $nt === ' '){ continue; }
+        if('.' === $nck && $nt === 'N'){ continue; }
         if('=' === $nck && $nt === 'T'){ continue; }
         if('|' === $nck && $nt === 'C'){ continue; }        
         if($nx === $tx && $ny === $ty && $nt !== 'T' ){ continue; }
@@ -123,9 +113,10 @@ while(!$positionsQ->isEmpty()){
         $mcost = (int) $mcost;
         $ncm = $cm + $mcost;
         $ncw = $mweight - $ncm - $ncd;
-        $positionsQ->push( ['cx'=>(int)$nx,  'cy'=>(int)$ny, 'ct'=>$nt,
+        $nmoves = $pmoves; $nmoves[] = $move;
+        $positionsQ->push( ['cx'=>(int)$nx,  'cy'=>(int)$ny, 'ck'=>$nck, 'ct'=>$nt,
                             'cm'=>(int)$ncm, 'cd'=>$ncd,     'cw'=>$ncw, 
-                            'pm'=>$move, 'pmoves'=>array_merge($pmoves, [$move]), ], 
+                            'pm'=>$move, 'pmoves'=>$nmoves, ],
                            $ncw );
     }    
 }
@@ -138,19 +129,13 @@ function showMoves($pmoves){
     $zg[$zy][$zx]='X';
     foreach($pmoves as $m){
         switch($m){
-         case 'U':$zy--;  break; 
-         case 'D':$zy++;  break;
-         case 'L':$zx--;  break; 
-         case 'R':$zx++;  break;
-         case 'T':
-         case 'C': 
-         case ' ':{ 
-             $zt=$m; 
-             break; 
-         }
+         case 'U':$zy--; break; 
+         case 'D':$zy++; break; 
+         case 'L':$zx--; break; 
+         case 'R':$zx++; break;
+         case 'T': case 'C': case 'N':{ $zt=$m; break; }
         }
-        if($zx>$mzx)$mzx=min($mx, $zx);
-        if($zy>$mzy)$mzy=min($my, $zy);
+        if($zx>$mzx)$mzx=min($mx, $zx); if($zy>$mzy)$mzy=min($my, $zy);
         $zg[$zy][$zx]=$zt;
     }
     showGridZone($zg, 0,0, $mzx+2, $mzy+2, 1);
