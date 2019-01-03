@@ -12,7 +12,8 @@ foreach($lines as $line){
 printf("Depth: %4d, Target: x:%4d y:%4d\n", $depth, $tx, $ty);
 
 // part 1
-[$mx, $my] = [ (int) ($tx + 5), (int) ($ty + 5)];
+$d = 15; // need some slack, so that the path finding in part 2 could try to surround the target
+[$mx, $my] = [ (int) ($tx + $d), (int) ($ty + $d)];
 $ag  = A2Dnew($mx,$my); $agi = A2Dnew($mx,$my); $age = A2Dnew($mx,$my);
 $sumrisk = 0;
 for($y=0;$y<=$my;$y++){
