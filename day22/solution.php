@@ -1,9 +1,6 @@
 #!/usr/bin/env php
 <?php 
 include("common.php");
-ini_set('xdebug.max_nesting_level', 2012);
-ini_set('zend.assertions', 1);
-ini_set('assert.exception', 1);
 
 $lines = read_input(); $depth  = 0; $tx=0; $ty=0;
 foreach($lines as $line){
@@ -16,6 +13,7 @@ printf("Depth: %4d, Target: x:%4d y:%4d\n", $depth, $tx, $ty);
 $d = 15; // need some slack, so that the path finding in part 2 could try to surround the target
 [$mx, $my] = [ (int) ($tx + $d), (int) ($ty + $d)];
 $ag  = A2Dnew($mx,$my); $agi = A2Dnew($mx,$my); $age = A2Dnew($mx,$my);
+$distances = A2Dnew($mx,$my,0);  
 $sumrisk = 0;
 for($y=0;$y<=$my;$y++){
     for($x=0;$x<=$mx;$x++){
@@ -28,6 +26,7 @@ for($y=0;$y<=$my;$y++){
         $agi[$y][$x] = $gi;
         $age[$y][$x] = $ge;
         if($y <= $ty && $x <= $tx) $sumrisk += $risk;
+        $distances[$y][$x] = (int) (abs($y-$ty) + abs($x-$tx));
     }
 }
 //$ag[0][0]='M'; $ag[$ty][$tx]='T';
@@ -35,15 +34,12 @@ showGridZone($ag, 0,0, $mx+1, $my+1, 1);
 printf("Total risk for the area: %10d\n", $sumrisk);
 
 // part 2
-$possibletools = [ '.'=>['T','C'], '='=>['C','N'], '|'=>['T','N'], ];
-$toolcosts = ['T'=>7,'C'=>7,'N'=>7,];
-$mg = A2Dnew($mx,$my,SPACE_EMPTY);
-$distances = A2Dnew($mx,$my,0); for($y=0;$y<=$my;$y++) for($x=0;$x<=$mx;$x++) $distances[$y][$x] = (int) (abs($y-$ty) + abs($x-$tx));
-
 $visited = []; 
+$cpositions=0; $spositions = 0;
+$toolcosts = ['T'=>7,'C'=>7,'N'=>7,];
+$possibletools = [ '.'=>['T','C'], '='=>['C','N'], '|'=>['T','N'], ];
 $positionsQ = new Ds\PriorityQueue(); 
 $positionsQ->push(['cx'=>0,'cy'=>0,'ck'=>$ag[0][0],'ct'=>'T','cm'=>0,'cd'=>$mx*$my,'cw'=>0, 'pm'=>'z', 'pmoves'=>[], ], 0);
-$cpositions=0; $spositions = 0;
 while(!$positionsQ->isEmpty() && $cstate = $positionsQ->pop() ){
     $cpositions++;
     ['cx'=>$cx, 'cy'=>$cy, 'ck'=>$ck, 'ct'=>$ct, 'cm'=>$cm, 'cd'=>$cd, 'cw'=>$cw, 'pm'=>$pm, 'pmoves'=>$pmoves]=$cstate;    
@@ -59,7 +55,8 @@ while(!$positionsQ->isEmpty() && $cstate = $positionsQ->pop() ){
     if( isset($visited[$cy][$cx][$ct]) ) {
         // Already visited this coordinate, equiped with this same tool ... 
         // Cut moving in circles by skipping and going to the next queued position
-        { $spositions++; continue; }
+        $spositions++; 
+        continue;
     }
     $visited[$cy][$cx][$ct] = $cm;
 
@@ -112,9 +109,7 @@ printf("Total cpos: %8d , spos: %8d \n", $cpositions, $spositions);
 
 function showMoves($pmoves){
     global $mx, $my;
-    global $mg;
-    global $ag;
-    $zg = $mg; $zx=0;$zy=0;$zt='T'; $mzx=0;$mzy=0;
+    $zg = A2Dnew($mx,$my,SPACE_EMPTY); $zx=0;$zy=0;$zt='T'; $mzx=0;$mzy=0;
     $zg[$zy][$zx]='X';
     foreach($pmoves as $m){
         switch($m){
