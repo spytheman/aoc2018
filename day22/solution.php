@@ -86,10 +86,6 @@ while(!$positionsQ->isEmpty()){
 
     $cmoves = $movecosts;
     unset($cmoves[ $ct ]); // no point to change to the already selected tool
-
-    if('.' === $ck && $ct === ' '){ /*echo "Cut: ck='.' && ct=' '\n"; */ continue; }
-    if('=' === $ck && $ct === 'T'){ /*echo "Cut: ck='=' && ct='T'\n"; */ continue; }
-    if('|' === $ck && $ct === 'C'){ /*echo "Cut: ck='|' && ct='C'\n"; */ continue; }
     
     if('.' === $ck) unset($cmoves[' ']);
     if('=' === $ck) unset($cmoves['T']);
@@ -116,12 +112,17 @@ while(!$positionsQ->isEmpty()){
          case 'L':$nx--;  break;         case 'R':$nx++;  break;
          case 'T':; case 'C':; case ' ': { $nt=$move; break; }
         }
-        if( ($nx<0||$nx>$mx) || ($ny<0||$ny>$my) )continue;
+        if( ($nx<0||$nx>$mx) || ($ny<0||$ny>$my) )continue;        
+        $nck = $ag[$ny][$nx];
+        if('.' === $nck && $nt === ' '){ continue; }
+        if('=' === $nck && $nt === 'T'){ continue; }
+        if('|' === $nck && $nt === 'C'){ continue; }        
+        if($nx === $tx && $ny === $ty && $nt !== 'T' ){ continue; }
         /////////////////////////////////////////////////////////////
         $ncd = $distances[$ny][$nx];
         $mcost = (int) $mcost;
         $ncm = $cm + $mcost;
-        $ncw = $mweight - $ncm;
+        $ncw = $mweight - $ncm - $ncd;
         $positionsQ->push( ['cx'=>(int)$nx,  'cy'=>(int)$ny, 'ct'=>$nt,
                             'cm'=>(int)$ncm, 'cd'=>$ncd,     'cw'=>$ncw, 
                             'pm'=>$move, 'pmoves'=>array_merge($pmoves, [$move]), ], 
@@ -133,7 +134,7 @@ function showMoves($pmoves){
     global $mx, $my;
     global $mg;
     global $ag;
-    $zg = $ag; $zx=0;$zy=0;$zt='T'; $mzx=0;$mzy=0;
+    $zg = $mg; $zx=0;$zy=0;$zt='T'; $mzx=0;$mzy=0;
     $zg[$zy][$zx]='X';
     foreach($pmoves as $m){
         switch($m){
