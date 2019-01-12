@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 {
    setbuf(stdout, NULL);
 
-   int batchsize = 500000000; // ~1s realtime
+   int batchsize = 2147483647; // ~1s realtime
    if( argc > 1 ) r0 = atoi(argv[1]);
    if( argc > 2 ) batchsize = atoi(argv[2]);
 
